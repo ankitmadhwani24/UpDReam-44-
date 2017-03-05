@@ -1,0 +1,196 @@
+// body {
+//     background-color: #f0f0f0;
+// }
+.login-page {
+    h1 {
+        color: $cyan-text;
+    }
+    i {
+        color: $orange;
+    }
+    .submit {
+        background-color: transparent;
+        border: 2px solid $orange;
+        box-shadow: none;
+        color: $orange;
+        height: auto;
+        font-size: 18px;
+        border-radius: 40px;
+        padding: 7px 60px;
+    }
+}
+.first-selection {
+    height: 100%;
+    position: relative;
+    @extend .login-page;
+    background-image: url('../img/road-bg.jpg');
+    background-position: center;
+    background-size: cover;
+    h4 {
+        margin-top: 60px;
+        color: $white;
+        span {
+            font-weight: 500;
+        }
+    }
+    .btn-sel {
+        position: absolute;
+        top: 50%;
+        margin-top: -36px;
+        text-align: center;
+    }
+    .selections-btn {
+        @include btn-fill();
+    }
+}
+.route-selection {
+    @extend .first-selection;
+    h4 {
+        margin-top: 50px;
+    }
+    .selections-btn {
+        width: auto;
+        // margin-top: 0;
+        display: block;
+        // background-color: #50af85;
+        padding: 8px 20px;
+    }
+}
+
+.confirm {
+    // padding-bottom: $base-space * 2;
+    textarea {
+        min-height: 120px;
+        margin-bottom: 0;
+    }
+    .metadata {
+        li {
+            span {
+                width: 140px;
+                display: inline-block;
+                font-size: 16px;
+                &.title {
+                    font-weight: 600;
+                    margin-bottom: 10px;
+                }
+            }
+            .time-date {
+                display: inline-block;
+                span {
+                    width: auto;
+                }
+            }
+            .gps {
+                width: auto;
+            }
+            .lat,
+            .long,
+            .accu {
+                padding-left: $base-space;
+                p {
+                    display: inline-block;
+                    width: 128px;
+                    font-size: 16px;
+                    margin: 0;
+                }
+            }
+        }
+    }
+    .status {
+        p {
+            font-weight: 600;
+            font-size: 16px;
+        }
+        label {
+            float: left;
+            font-size: 16px;
+            color: #000;
+            margin-top: 12px;
+        }
+        a {
+            padding: 15px 25px;
+            height: auto;
+            margin-top: 8px;
+            box-shadow: none;
+            position: relative;
+            &.active {
+                &:after {
+                    position: absolute;
+                    content: "\f00c";
+                    font: normal normal normal 22px/1 FontAwesome;
+                    left: 15px;
+                    top: 4px;
+                }
+            }
+        }
+    }
+    .add-pic {
+        background-color: $cyan-text;
+        display: inline-block;
+        height: auto;
+        padding: 1px;
+        padding: 8px 40px;
+        font-weight: 500;
+        font-size: 18px;
+        margin-bottom: 15px;
+        i {
+            padding-left: 6px;
+        }
+    }
+
+    .damg-img {
+        margin-top: $base-space;
+    }
+}
+
+.route {
+    .route-time {
+        font-size: 16px;
+        margin-top: 25px;
+    }
+    .mark-damage {
+        ul {
+            // font-size: 0;
+            li {
+                display: inline-block;
+                width: 50%;
+                float: left;
+                p {
+                    font-size: 18px ;
+                    font-weight: 600;
+                    margin-bottom: 0px;
+                }
+                &.damages {
+                    p {
+                        font-size: 28px;
+                        margin-top: 10px;
+                        margin-bottom: 0;
+                    }
+
+                }
+            }
+        }
+    }
+    .marker,.list,.excla {
+        background-color: transparent;
+        border: 2px solid $orange;
+        box-shadow: none;
+        color: $orange;
+        height: auto;
+        font-size: 18px;
+        border-radius: 40px;
+        // padding: 7px 60px;
+        display: block;
+        i {
+            font-size: 19px;
+        }
+        img {
+            vertical-align: -8px;
+        }
+    }
+    .excla {
+        background-color: #ffc700;
+        border: 2px solid #000;
+    }
+
+}

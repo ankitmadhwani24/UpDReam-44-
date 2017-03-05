@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2012-2016 Adobe Systems Incorporated. All rights reserved.
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+    <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" />
+    <!-- Good default declaration:
+    * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+    * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+    * Disables use of eval() and inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+        * Enable inline JS: add 'unsafe-inline' to default-src
+        * Enable eval(): add 'unsafe-eval' to default-src
+    * Create your own at http://cspisawesome.com
+    -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+
+    <link rel="stylesheet" type="text/css" href="css/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
+    <!-- <link rel="stylesheet" type="text/css" href="css/index.css" /> -->
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <title>Dream</title>
+</head>
+
+<body>
+    <section class="login-page">
+        <div class="container centr-bytranslate">
+            <div class="row flush">
+                <div class="col s12">
+                    <h1 class="center-align flush-top">Dr<span>EAM</span></h1>
+                </div>
+                <form class="col s12">
+                    <div class="row">
+                        <div class="input-field col s10 offset-s1 m8 offset-m2">
+                            <i class="fa fa-user-circle prefix fa-3x" aria-hidden="true"></i>
+                            <input id="username" type="text">
+                            <label for="username">Username</label>
+                        </div>
+                        <div class="input-field col s10 offset-s1 m8 offset-m2">
+                            <i class="fa fa-unlock prefix fa-3x" aria-hidden="true"></i>
+                            <span class="pass-img"></span>
+                            <input id="pass" type="password">
+                            <label for="pass">Password</label>
+                        </div>
+                        <div class="input-field col s10 offset-s1 m8 offset-m2 center-align">
+                            <button class="btn waves-effect waves-light submit" type="submit">Login
+                                <i class="fa fa-paper-plane right" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section class="page page-0 first-selection">
+        <div class="container">
+            <div class="row">
+                <div class="col s12">
+                    <h4>Welcome <span class="username">User</span></h4>
+                </div>
+            </div>
+            <div class="row">
+                <article class="btn-sel">
+                    <div class="col s12">
+                        <a  href="#" class="btn waves-effect waves-light selections-btn flush-top">Ordinary Activity</a>
+                    </div>
+                    <div class="col s12">
+                        <a  href="#" class="btn waves-effect waves-light selections-btn">Quick Marker</a>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+    <section class="page page-1 route-selection">
+        <div class="container">
+            <div class="row flush">
+                <div class="col s12">
+                    <h4><span class="username">User</span></h4>
+                </div>
+            </div>
+            <div class="row flush">
+                <div class="col s6 m4 center-align">
+                    <a  href="#modal1" class="btn waves-effect waves-light selections-btn">Route 1</a>
+                </div>
+                <div class="col s6 m4 center-align">
+                    <a  href="#modal1" class="btn waves-effect waves-light selections-btn">Route 2</a>
+                </div>
+                <div class="col s6 m4 center-align">
+                    <a  href="#modal1" class="btn waves-effect waves-light selections-btn">Route 3</a>
+                </div>
+                <div class="col s6 m4 center-align">
+                    <a  href="#modal1" class="btn waves-effect waves-light selections-btn">Route 4</a>
+                </div>
+                <div class="col s6 m4 center-align">
+                    <a  href="#modal1" class="btn waves-effect waves-light selections-btn">Route 5</a>
+                </div>
+                <div class="col s6 m4 center-align">
+                    <a  href="#modal1" class="btn waves-effect waves-light selections-btn">Route 6</a>
+                </div>
+                <div class="col s6 m4 center-align">
+                    <a  href="#modal1" class="btn waves-effect waves-light selections-btn">Route 7</a>
+                </div>
+                <div class="col s6 m4 center-align">
+                    <a  href="#modal1" class="btn waves-effect waves-light selections-btn">Route 8</a>
+                </div>
+                <div class="col s6 m4 center-align offset-s3">
+                    <a  href="#modal1" class="btn waves-effect waves-light selections-btn">Route 9</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="page page-2 confirm">
+        <div class="container">
+            <div class="screen-operations row">
+                <div class="col s6">
+                    <i class="fa fa-arrow-left fa-2x" aria-hidden="true"></i>
+                </div>
+                <div class="col s6 right-align">
+                    <i class="fa fa-times fa-2x" aria-hidden="true"></i>
+                </div>
+            </div>
+            <div class="row border push-top-60">
+                <div class="col s12 m5">
+                    <div class="damg-img">
+                        <img src="img/pot-holes.jpg" class="responsive-img" alt="">
+                    </div>
+                </div>
+                <div class="col s12 m7">
+                    <h5>Image MetaData</h5>
+                    <ul class="metadata">
+                        <li>
+                            <span class="title">User ID</span>
+                            <span>1234</span>
+                        </li>
+                        <li>
+                            <span class="title">Date | Time</span>
+                            <div class="time-date">
+                                <span class="date">24/01/1993 </span> | <span class="time">14:00</span>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="title gps">GPS Positions and Accuracy</span>
+                            <div class="lat">
+                                <p>Latitute</p>
+                                <span>12.000</span>
+                            </div>
+                            <div class="long">
+                                <p>longitude</p>
+                                <span>72.000</span>
+                            </div>
+                            <div class="accu">
+                                <p>Accuracy</p>
+                                <span>1000</span>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="title flush-bottom push-5">Address</span>
+                            <address class="">
+                                Lorem ipsum dolor sit amet, <br>
+                                consectetur adipisicing elit, sed do eiusmod <br>
+                                 tempor incididunt
+                            </address>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col s12">
+                    <form class="row">
+                        <div class="input-field col s8 m6">
+                          <textarea id="textarea1" class="materialize-textarea"></textarea>
+                          <label for="textarea1">Add note</label>
+                        </div>
+                        <div class="col s4 m6">
+                            <ul class="center-align status">
+                                <li>
+                                    <p class="center-align">Maintenance status</p>
+                                </li>
+                                <li class="right-align">
+                                    <label>1.</label>
+                                    <a href="#" class="btn green darken-2 active" data-status="ok"></a>
+                                </li>
+                                <li class="right-align">
+                                    <label>2.</label>
+                                    <a href="#" class="btn yellow darken-1" data-status="intermidiate"></a>
+                                </li>
+                                <li class="right-align">
+                                    <label>3.</label>
+                                    <a href="#" class="btn red darken-2" data-status="danger"></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </form>
+
+                </div>
+
+                <div class="col s12">
+                    <div class="row">
+                        <div class="col s10 m6 offset-s1 center-align">
+                            <a href="#" class="btn add-pic">Add pictures <i class="fa fa-camera" aria-hidden="true"></i></a>
+                        </div>
+                        <div class="col s10 m6 offset-s1 center-align">
+                            <a href="#" class="btn stop-activity flush-top mark-damage">Mark Damage</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="page page-3 route">
+        <div class="container">
+            <div class="screen-operations row">
+                <div class="col 12 full-width">
+                    <h5 class="route-name center-align">Route N</h5>
+                </div>
+            </div>
+            <div class="row border push-top-60">
+                <div class="col s6 m6">
+                    <h4><span class="username">User</span></h4>
+                </div>
+                <div class="col s6 m6">
+                    <h4 class="route-time"><span class="date-routen">24/01/2000</span> | <time>14:00 hrs</time></h4>
+                </div>
+                <div class="mark-damage col s12">
+                    <ul>
+                        <li>
+                            <p>Marked damages</p>
+                        </li>
+                        <li class="damages">
+                            <p>5</p>
+                        </li>
+                        <li>
+                            <p>Elapsed Time</p>
+                        </li>
+                        <li class="elapsed">
+                            <p>HH:MM:SS</p>
+                        </li>
+                        <li>
+                            <p>Distanc travelled</p>
+                        </li>
+                        <li class="traveled">
+                            <p>12.7 <span>km</span></p>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col s4 push-top-30">
+                    <a href="#" class="btn marker"><i class="fa fa-map-marker" aria-hidden="true"></i></a>
+                </div>
+                <div class="col s4 push-top-30">
+                    <a href="#list" class="btn list"><i class="fa fa-list" aria-hidden="true"></i></a>
+                </div>
+                <div class="col s4 push-top-30">
+                    <a href="#" class="btn excla"><img src="img/logo-btn.png" alt=""></i></a>
+                </div>
+                <div class="col s12 center-align push-bottom-30">
+                    <a href="#" class="btn stop-activity">Stop activity</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="modal1" class="modal bottom-sheet">
+        <div class="modal-footer">
+            <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat"><i class="fa fa-times" aria-hidden="true"></i></a>
+        </div>
+        <div class="modal-content center-align">
+            <a href="#" class="start-activity btn">Start Activity</a>
+        </div>
+    </div>
+    <div id="list" class="modal bottom-sheet">
+        <div class="modal-footer">
+            <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat"><i class="fa fa-times" aria-hidden="true"></i></a>
+        </div>
+        <div class="modal-content center-align list-table">
+
+            <table class="bordered striped centered">
+                <thead>
+                    <tr>
+                        <th data-field="user">User</th>
+                        <th data-field="route">Route</th>
+                        <th data-field="date">Date</th>
+                        <th data-field="mark">Mark@Km</th>
+                        <th data-field="et">Mark@ellapsed Time</th>
+                        <th data-field="thumb">Picture Thumbnail</th>
+                        <th data-field="gps">GPS</th>
+                        <th data-field="address">Address</th>
+                        <th data-field="status">Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>Username</td>
+                        <td>1</td>
+                        <td>24/01/2000</td>
+                        <td>2.3km</td>
+                        <td>00:00:00</td>
+                        <td>
+                            <img src="img/pot-holes.jpg" width="100px" height="100px" alt="">
+                        </td>
+                        <td>
+                            13,13
+                        </td>
+                        <td>
+                            Lorem ipsum dolor sit amet.
+                        </td>
+                        <td>
+                            3
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Username</td>
+                        <td>1</td>
+                        <td>24/01/2000</td>
+                        <td>2.3km</td>
+                        <td>00:00:00</td>
+                        <td>
+                            <img src="img/pot-holes.jpg" width="100px" height="100px" alt="">
+                        </td>
+                        <td>
+                            13,13
+                        </td>
+                        <td>
+                            Lorem ipsum dolor sit amet.
+                        </td>
+                        <td>
+                            3
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- TODO: to be removed -->
+    <button type="button" name="button" id="next">Next</button>
+    <script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+    <script type="text/javascript" src="js/materialize.min.js"></script>
+    <script type="text/javascript">
+        app.initialize();
+    </script>
+</body>
+
+</html>

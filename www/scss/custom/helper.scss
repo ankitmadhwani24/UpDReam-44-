@@ -1,0 +1,30 @@
+.flush {
+    margin: 0 !important;
+}
+.flush-top {
+    margin-top: 0 !important;
+}
+.flush-bottom {
+    margin-bottom: 0 !important;
+}
+.push-top-30 {
+    margin-top: $base-space ;
+}
+.push-bottom-30 {
+    margin-bottom: $base-space *2;
+}
+.push-5 {
+    margin-top: 5px;
+}
+.push-top-60 {
+    margin-top: 65px;
+}
+.pos-rel {
+    position: relative;
+}
+.pos.abs {
+    position: absolute;
+}
+.full-width {
+    width: 100%;
+}

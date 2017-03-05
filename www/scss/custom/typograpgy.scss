@@ -1,0 +1,61 @@
+html,body {
+    height: 100%;
+}
+.centr-bytranslate {
+    transform: translateY(45%);
+}
+.border {
+    border: 1px solid #eee
+}
+@mixin btn-fill() {
+    background-color: $orange;
+    color: $white;
+    margin-top: ceil($base-space * 1.2);
+    font-weight: 500;
+    font-size: 18px;
+    padding: 8px 15px;
+    height: initial;
+    width: 240px;
+}
+@mixin emptyBtn() {
+    background-color: transparent;
+    border: 2px solid $orange;
+    box-shadow: none;
+    color: $orange;
+    height: auto;
+    font-size: 18px;
+    border-radius: 40px;
+    padding: 7px 60px;
+    &:focus,&:hover {
+        background-color: transparent;
+    }
+}
+.stop-activity {
+    @include btn-fill();
+}
+.screen-operations {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: $orange;
+    color: $white;
+    padding: 8px 10px;
+    left: 0;
+    top: 0;
+    @extend .flush;
+}
+
+
+@for $i from 0 through 5 {
+    .page-#{$i} {
+        display: none;
+    }
+}
+
+
+// TODO: to be remove
+#next {
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+}

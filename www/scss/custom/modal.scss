@@ -1,0 +1,9 @@
+.modal.bottom-sheet {
+    max-height: 95%;
+}
+.start-activity {
+    @include emptyBtn();
+}
+.list-table {
+    overflow: scroll;
+}
