@@ -27,7 +27,7 @@
     <meta name="msapplication-tap-highlight" content="no" />
     <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
     <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
-    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" />
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" /> -->
     <!-- Good default declaration:
     * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
     * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
@@ -65,11 +65,15 @@
                             <input id="pass" type="password">
                             <label for="pass">Password</label>
                         </div>
-                        <div class="input-field col s10 offset-s1 m8 offset-m2 center-align">
-                            <button class="btn waves-effect waves-light submit" type="submit">Login
-                                <i class="fa fa-paper-plane right" aria-hidden="true"></i>
-                            </button>
+                        <div class="col s10 offset-s1 m8 offset-m2 center-align">
+                            <span class="error">Please enter your details</span>
                         </div>
+                        <div class="input-field col s10 offset-s1 m8 offset-m2 center-align">
+                            <a class="btn waves-effect waves-light submit">Login
+                                <i class="fa fa-paper-plane right" aria-hidden="true"></i>
+                            </a>
+                        </div>
+
                     </div>
                 </form>
             </div>
@@ -86,10 +90,10 @@
             <div class="row">
                 <article class="btn-sel">
                     <div class="col s12">
-                        <a  href="#" class="btn waves-effect waves-light selections-btn flush-top">Ordinary Activity</a>
+                        <a  href="#" class="btn waves-effect waves-light selections-btn flush-top ordinary-btn">Ordinary Activity</a>
                     </div>
                     <div class="col s12">
-                        <a  href="#" class="btn waves-effect waves-light selections-btn">Quick Marker</a>
+                        <a  href="#" class="btn waves-effect waves-light selections-btn quick-maker">Quick Marker</a>
                     </div>
                 </article>
             </div>
@@ -102,33 +106,33 @@
                     <h4><span class="username">User</span></h4>
                 </div>
             </div>
-            <div class="row flush">
+            <div class="row flush route-container">
                 <div class="col s6 m4 center-align">
-                    <a  href="#modal1" class="btn waves-effect waves-light selections-btn">Route 1</a>
+                    <a data-id="1" href="#modal1" class="btn waves-effect waves-light selections-btn">Route 1</a>
                 </div>
                 <div class="col s6 m4 center-align">
-                    <a  href="#modal1" class="btn waves-effect waves-light selections-btn">Route 2</a>
+                    <a data-id="2" href="#modal1" class="btn waves-effect waves-light selections-btn">Route 2</a>
                 </div>
                 <div class="col s6 m4 center-align">
-                    <a  href="#modal1" class="btn waves-effect waves-light selections-btn">Route 3</a>
+                    <a data-id="3" href="#modal1" class="btn waves-effect waves-light selections-btn">Route 3</a>
                 </div>
                 <div class="col s6 m4 center-align">
-                    <a  href="#modal1" class="btn waves-effect waves-light selections-btn">Route 4</a>
+                    <a data-id="4" href="#modal1" class="btn waves-effect waves-light selections-btn">Route 4</a>
                 </div>
                 <div class="col s6 m4 center-align">
-                    <a  href="#modal1" class="btn waves-effect waves-light selections-btn">Route 5</a>
+                    <a data-id="5" href="#modal1" class="btn waves-effect waves-light selections-btn">Route 5</a>
                 </div>
                 <div class="col s6 m4 center-align">
-                    <a  href="#modal1" class="btn waves-effect waves-light selections-btn">Route 6</a>
+                    <a data-id="6" href="#modal1" class="btn waves-effect waves-light selections-btn">Route 6</a>
                 </div>
                 <div class="col s6 m4 center-align">
-                    <a  href="#modal1" class="btn waves-effect waves-light selections-btn">Route 7</a>
+                    <a data-id="7" href="#modal1" class="btn waves-effect waves-light selections-btn">Route 7</a>
                 </div>
                 <div class="col s6 m4 center-align">
-                    <a  href="#modal1" class="btn waves-effect waves-light selections-btn">Route 8</a>
+                    <a data-id="8" href="#modal1" class="btn waves-effect waves-light selections-btn">Route 8</a>
                 </div>
                 <div class="col s6 m4 center-align offset-s3">
-                    <a  href="#modal1" class="btn waves-effect waves-light selections-btn">Route 9</a>
+                    <a data-id="9" href="#modal1" class="btn waves-effect waves-light selections-btn">Route 9</a>
                 </div>
             </div>
         </div>
@@ -146,7 +150,7 @@
             <div class="row border push-top-60">
                 <div class="col s12 m5">
                     <div class="damg-img">
-                        <img src="img/pot-holes.jpg" class="responsive-img" alt="">
+                        <img src="" class="responsive-img" alt="">
                     </div>
                 </div>
                 <div class="col s12 m7">
@@ -154,7 +158,7 @@
                     <ul class="metadata">
                         <li>
                             <span class="title">User ID</span>
-                            <span>1234</span>
+                            <span class="userid"></span>
                         </li>
                         <li>
                             <span class="title">Date | Time</span>
@@ -166,15 +170,15 @@
                             <span class="title gps">GPS Positions and Accuracy</span>
                             <div class="lat">
                                 <p>Latitute</p>
-                                <span>12.000</span>
+                                <span>000</span>
                             </div>
                             <div class="long">
                                 <p>longitude</p>
-                                <span>72.000</span>
+                                <span>000</span>
                             </div>
                             <div class="accu">
                                 <p>Accuracy</p>
-                                <span>1000</span>
+                                <span>000</span>
                             </div>
                         </li>
                         <li>
@@ -200,7 +204,7 @@
                                 </li>
                                 <li class="right-align">
                                     <label>1.</label>
-                                    <a href="#" class="btn green darken-2 active" data-status="ok"></a>
+                                    <a href="#" class="btn green darken-2" data-status="ok"></a>
                                 </li>
                                 <li class="right-align">
                                     <label>2.</label>
@@ -218,6 +222,7 @@
 
                 <div class="col s12">
                     <div class="row">
+                        <img src="" class="test" alt="">
                         <div class="col s10 m6 offset-s1 center-align">
                             <a href="#" class="btn add-pic">Add pictures <i class="fa fa-camera" aria-hidden="true"></i></a>
                         </div>
@@ -233,7 +238,7 @@
         <div class="container">
             <div class="screen-operations row">
                 <div class="col 12 full-width">
-                    <h5 class="route-name center-align">Route N</h5>
+                    <h5 class="route-name center-align">Route <span class="route-number">N</span></h5>
                 </div>
             </div>
             <div class="row border push-top-60">
@@ -261,7 +266,7 @@
                             <p>Distanc travelled</p>
                         </li>
                         <li class="traveled">
-                            <p>12.7 <span>km</span></p>
+                            <p><span class="distance">0</span> <span>km</span></p>
                         </li>
                     </ul>
                 </div>
@@ -272,7 +277,7 @@
                     <a href="#list" class="btn list"><i class="fa fa-list" aria-hidden="true"></i></a>
                 </div>
                 <div class="col s4 push-top-30">
-                    <a href="#" class="btn excla"><img src="img/logo-btn.png" alt=""></i></a>
+                    <a href="#" class="btn excla inner-quick-maker"><img src="img/logo-btn.png" alt=""></i></a>
                 </div>
                 <div class="col s12 center-align push-bottom-30">
                     <a href="#" class="btn stop-activity">Stop activity</a>
@@ -348,21 +353,23 @@
                         <td>
                             3
                         </td>
-                    </tr>
+                    </tr>Ordinary Activity
                 </tbody>
             </table>
         </div>
     </div>
 
     <!-- TODO: to be removed -->
-    <button type="button" name="button" id="next">Next</button>
+    <!-- <button type="button" name="button" id="next">Next</button> -->
     <script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
     <script type="text/javascript" src="cordova.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDD6FUlRxbY98QXs9-lsgT-wzoQUNx4PIw"></script>
     <script type="text/javascript" src="js/index.js"></script>
     <script type="text/javascript" src="js/materialize.min.js"></script>
     <script type="text/javascript">
         app.initialize();
     </script>
+    <!-- <script src="http://192.168.43.48:8080/target/target-script-min.js#anonymous"></script> -->
 </body>
 
 </html>

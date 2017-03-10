@@ -44,14 +44,22 @@ html,body {
     top: 0;
     @extend .flush;
 }
-
+.error {
+    color: red;
+    display: none;
+}
 
 @for $i from 0 through 5 {
+    // .page-#{$i},.login-page {
     .page-#{$i} {
         display: none;
     }
 }
 
+
+// .page-0 {
+//     display: block;
+// }
 
 // TODO: to be remove
 #next {
@@ -59,3 +67,6 @@ html,body {
     bottom: 15px;
     right: 15px;
 }
+// .first-selection {
+//       display: block;
+// }
