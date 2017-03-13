@@ -62,7 +62,7 @@
 }
 .route-selection {
     // @extend .first-selection;
-    display: none;
+    // display: block;
     h1 {
         color: $cyan-text;
     }
@@ -116,6 +116,13 @@
 
 .confirm {
     // display: block;
+    .show-more {
+        margin-bottom: 15px;
+        display: -webkit-flex;
+        display: flex;
+        -webkit-justify-content: space-between;
+        justify-content: space-between;
+    }
     textarea {
         min-height: 120px;
         margin-bottom: 0;
@@ -249,5 +256,19 @@
         background-color: #ffc700;
         border: 2px solid #000;
     }
+
+}
+
+.map {
+    padding-top: 70px;
+}
+.elapsed {
+    min-height: 45px;
+}
+#time {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 0px;
+    padding-top: 18px;
 
 }

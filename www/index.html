@@ -141,10 +141,10 @@
         <div class="container">
             <div class="screen-operations row">
                 <div class="col s6">
-                    <i class="fa fa-arrow-left fa-2x" aria-hidden="true"></i>
+                    <i class="fa fa-arrow-left fa-2x map-back" aria-hidden="true"></i>
                 </div>
                 <div class="col s6 right-align">
-                    <i class="fa fa-times fa-2x" aria-hidden="true"></i>
+                    <i class="fa fa-times fa-2x close-screen" aria-hidden="true"></i>
                 </div>
             </div>
             <div class="row border push-top-60">
@@ -219,10 +219,10 @@
                     </form>
 
                 </div>
-
+                <div class="col s12 show-more"></div>
                 <div class="col s12">
                     <div class="row">
-                        <img src="" class="test" alt="">
+                        <!-- <img src="" class="test" alt=""> -->
                         <div class="col s10 m6 offset-s1 center-align">
                             <a href="#" class="btn add-pic">Add pictures <i class="fa fa-camera" aria-hidden="true"></i></a>
                         </div>
@@ -243,7 +243,7 @@
             </div>
             <div class="row border push-top-60">
                 <div class="col s6 m6">
-                    <h4><span class="username">User</span></h4>
+                    <h4><span class="username">user</span></h4>
                 </div>
                 <div class="col s6 m6">
                     <h4 class="route-time"><span class="date-routen">24/01/2000</span> | <time>14:00 hrs</time></h4>
@@ -260,7 +260,11 @@
                             <p>Elapsed Time</p>
                         </li>
                         <li class="elapsed">
-                            <p>HH:MM:SS</p>
+                            <div id="time">
+                                <!-- <span id="hours">00</span> :
+                                <span id="minutes">00</span> :
+                                <span id="seconds">00</span> -->
+                            </div>
                         </li>
                         <li>
                             <p>Distanc travelled</p>
@@ -358,10 +362,27 @@
             </table>
         </div>
     </div>
+    <section class="page-4 map">
+        <div class="container">
+            <div class="row">
+                <div class="col s12">
+                    <div class="screen-operations row">
+                        <div class="col 12 full-width">
+                            <i class="fa fa-arrow-left fa-2x back-to-route" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col s12">
+                    <div id="googleMap" style="width:100%;height:500px;"></div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- TODO: to be removed -->
     <!-- <button type="button" name="button" id="next">Next</button> -->
     <script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="js/jquery.stopwatch.js"></script>
     <script type="text/javascript" src="cordova.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDD6FUlRxbY98QXs9-lsgT-wzoQUNx4PIw"></script>
     <script type="text/javascript" src="js/index.js"></script>

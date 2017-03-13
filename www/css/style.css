@@ -108,7 +108,6 @@ html, body {
     width: 240px; }
 
 .route-selection {
-  display: none;
   height: 100%;
   position: relative;
   background-image: url("../img/road-bg.jpg");
@@ -154,6 +153,12 @@ html, body {
     display: block;
     padding: 8px 20px; }
 
+.confirm .show-more {
+  margin-bottom: 15px;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-justify-content: space-between;
+  justify-content: space-between; }
 .confirm textarea {
   min-height: 120px;
   margin-bottom: 0; }
@@ -246,6 +251,18 @@ html, body {
 .route .excla {
   background-color: #ffc700;
   border: 2px solid #000; }
+
+.map {
+  padding-top: 70px; }
+
+.elapsed {
+  min-height: 45px; }
+
+#time {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 0px;
+  padding-top: 18px; }
 
 .flush, .screen-operations {
   margin: 0 !important; }
