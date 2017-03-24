@@ -30,7 +30,8 @@ html,body {
         background-color: transparent;
     }
 }
-.stop-activity {
+.stop-activity,
+.stop-1 {
     @include btn-fill();
 }
 .screen-operations {
@@ -50,8 +51,8 @@ html,body {
 }
 
 @for $i from 0 through 5 {
-    // .page-#{$i},.login-page {
-    .page-#{$i} {
+    .page-#{$i},.login-page {
+    // .page-#{$i} {
         display: none;
     }
 }
@@ -69,4 +70,8 @@ html,body {
 }
 .route {
     //   display: block;
+}
+
+#time2 {
+    display: none;
 }

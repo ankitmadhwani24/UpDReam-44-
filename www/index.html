@@ -97,6 +97,16 @@
                     </div>
                 </article>
             </div>
+            <div class="row">
+                <article class="fixed-bottom">
+                    <div class="col s6 push-top-30 center-align">
+                        <a href="#" class="btn marker"><i class="fa fa-map-marker" aria-hidden="true"></i></a>
+                    </div>
+                    <div class="col s6 center-align push-top-30">
+                        <a href="#list" class="btn list"><i class="fa fa-list" aria-hidden="true"></i></a>
+                    </div>
+                </article>
+            </div>
         </div>
     </section>
     <section class="page page-1 route-selection">
@@ -204,15 +214,15 @@
                                 </li>
                                 <li class="right-align">
                                     <label>1.</label>
-                                    <a href="#" class="btn green darken-2" data-status="ok"></a>
+                                    <a href="#" class="btn green darken-2" data-status="1"></a>
                                 </li>
                                 <li class="right-align">
                                     <label>2.</label>
-                                    <a href="#" class="btn yellow darken-1" data-status="intermidiate"></a>
+                                    <a href="#" class="btn yellow darken-1" data-status="2"></a>
                                 </li>
                                 <li class="right-align">
                                     <label>3.</label>
-                                    <a href="#" class="btn red darken-2" data-status="danger"></a>
+                                    <a href="#" class="btn red darken-2" data-status="3"></a>
                                 </li>
                             </ul>
                         </div>
@@ -227,7 +237,7 @@
                             <a href="#" class="btn add-pic">Add pictures <i class="fa fa-camera" aria-hidden="true"></i></a>
                         </div>
                         <div class="col s10 m6 offset-s1 center-align">
-                            <a href="#" class="btn stop-activity flush-top mark-damage">Mark Damage</a>
+                            <a href="#" class="btn flush-top stop-1 mark-damage">Mark Damage</a>
                         </div>
                     </div>
                 </div>
@@ -257,7 +267,7 @@
                             <p>5</p>
                         </li>
                         <li>
-                            <p>Elapsed Time</p>
+                            <p>Ellapsed Time</p>
                         </li>
                         <li class="elapsed">
                             <div id="time">
@@ -265,22 +275,17 @@
                                 <span id="minutes">00</span> :
                                 <span id="seconds">00</span> -->
                             </div>
+                            <div id="time2"></div>
                         </li>
                         <li>
-                            <p>Distanc travelled</p>
+                            <p>Distance travelled</p>
                         </li>
                         <li class="traveled">
                             <p><span class="distance">0</span> <span>km</span></p>
                         </li>
                     </ul>
                 </div>
-                <div class="col s4 push-top-30">
-                    <a href="#" class="btn marker"><i class="fa fa-map-marker" aria-hidden="true"></i></a>
-                </div>
-                <div class="col s4 push-top-30">
-                    <a href="#list" class="btn list"><i class="fa fa-list" aria-hidden="true"></i></a>
-                </div>
-                <div class="col s4 push-top-30">
+                <div class="col s6 offset-s3 push-top-30">
                     <a href="#" class="btn excla inner-quick-maker"><img src="img/logo-btn.png" alt=""></i></a>
                 </div>
                 <div class="col s12 center-align push-bottom-30">
@@ -307,20 +312,20 @@
             <table class="bordered striped centered">
                 <thead>
                     <tr>
+                        <th data-field="thumb">Picture Thumbnail</th>
                         <th data-field="user">User</th>
                         <th data-field="route">Route</th>
                         <th data-field="date">Date</th>
                         <th data-field="mark">Mark@Km</th>
                         <th data-field="et">Mark@ellapsed Time</th>
-                        <th data-field="thumb">Picture Thumbnail</th>
-                        <th data-field="gps">GPS</th>
+                        <!-- <th data-field="gps">GPS</th> -->
                         <th data-field="address">Address</th>
                         <th data-field="status">Status</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    <tr>
+                    <!-- <tr>
                         <td>Username</td>
                         <td>1</td>
                         <td>24/01/2000</td>
@@ -357,7 +362,7 @@
                         <td>
                             3
                         </td>
-                    </tr>Ordinary Activity
+                    </tr>Ordinary Activity -->
                 </tbody>
             </table>
         </div>

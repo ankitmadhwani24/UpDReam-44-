@@ -42,7 +42,7 @@
     background-image: url('../img/road-bg.jpg');
     background-position: center;
     background-size: cover;
-    // display: block;
+    display: block;
     h4 {
         margin-top: 60px;
         color: $white;
@@ -235,7 +235,7 @@
             }
         }
     }
-    .marker,.list,.excla {
+    .excla {
         background-color: transparent;
         border: 2px solid $orange;
         box-shadow: none;
@@ -271,4 +271,37 @@
     margin-bottom: 0px;
     padding-top: 18px;
 
+}
+.fixed-bottom {
+    position: fixed;
+    width: 100%;
+    left: 0;
+    bottom: 40px;
+    .marker,
+    .list {
+        background-color: transparent;
+        border: 2px solid $orange;
+        box-shadow: none;
+        color: $orange;
+        height: auto;
+        font-size: 18px;
+        border-radius: 40px;
+        background-color: $white;
+        padding: 0px 50px;
+        i {
+            font-size: 20px;
+        }
+    }
+}
+
+#infowindow {
+    figure {
+        margin: 0;
+    }
+    .bold {
+        font-weight: 800
+    }
+    span {
+        font-size: 12px;
+    }
 }

@@ -1,21 +1,21 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
+* Licensed to the Apache Software Foundation (ASF) under one
+* or more contributor license agreements.  See the NOTICE file
+* distributed with this work for additional information
+* regarding copyright ownership.  The ASF licenses this file
+* to you under the Apache License, Version 2.0 (the
+* "License"); you may not use this file except in compliance
+* with the License.  You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied.  See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
 
 var app = {
     // Application Constructor
@@ -33,22 +33,42 @@ var app = {
     onPageReady:    function() {
         // var onlineStatus = navigator.onLine ?  'online' : 'offline'
         // if (onlineStatus == 'online') {
-            // app.apiEvents();
+        app.apiEvents();
         // } else {
         //     alert("It's seems that you are not connected with internet. Please make sure that you have an active internet");
         // }
         // app.loginForm();
         var getToken = localStorage.getItem('LS_Auth');
         console.log(getToken);
+        // alert(getToken);
         if( typeof getToken != undefined && getToken != null ) {
+            // alert(getToken);
             $('.login-page').hide();
             // localStorage.setItem('LS_Auth',userNameDB);
             $('.first-selection').show();
             $('.username').text(getToken);
-        } else {
+
             app.db = openDatabase("Dream_App", "1.0", "Dream App", 5 * 1024 * 1024) //Create database
             var createUserTabel     = 'CREATE TABLE IF NOT EXISTS USERTABLE (user_id INTEGER PRIMARY KEY, user_name unique, password, first_name, family_name, user_work_number)'
-            ,   createQuickMarker   = 'CREATE TABLE IF NOT EXISTS DAMAGETABLE(damage_id INTEGER PRIMARY KEY, user_id, activity_id, date_time, gps_find, address, notes, img_name, maintenace_staus, img_optional_1, img_optional_2,img_optional_3)'
+            ,   createQuickMarker   = 'CREATE TABLE IF NOT EXISTS DAMAGETABLE(damage_id INTEGER PRIMARY KEY, user_id, activity_id, date_time, gps_find, address, notes, img_name, maintenace_staus, img_optional_1, img_optional_2,img_optional_3,mark_km,mark_ellapsed_time)'
+            ,   createRouteTable    = 'CREATE TABLE IF NOT EXISTS ROUTETABLE (route_id INTEGER PRIMARY KEY, route_N, route_description )'
+            ,   createActivityTable = 'CREATE TABLE IF NOT EXISTS ACTIVITYTABLE (activity_id INTEGER PRIMARY KEY, user_id, route_id, date_time_start, date_time_stop ,ellased_time, km_travelled, number_of_marker)'
+            ,   insert              = 'INSERT INTO USERTABLE (user_name, password, first_name, family_name, user_work_number) VALUES ("testuser","testuser","ifty","alam","9829055")';
+
+            app.db.transaction(function (tx) {
+                tx.executeSql(createUserTabel);
+                tx.executeSql(createQuickMarker);
+                tx.executeSql(createRouteTable);
+                tx.executeSql(createActivityTable);
+                tx.executeSql(insert);
+            });
+
+        } else {
+            // alert('e')
+            // console.log("x");
+            app.db = openDatabase("Dream_App", "1.0", "Dream App", 5 * 1024 * 1024) //Create database
+            var createUserTabel     = 'CREATE TABLE IF NOT EXISTS USERTABLE (user_id INTEGER PRIMARY KEY, user_name unique, password, first_name, family_name, user_work_number)'
+            ,   createQuickMarker   = 'CREATE TABLE IF NOT EXISTS DAMAGETABLE(damage_id INTEGER PRIMARY KEY, user_id, activity_id, date_time, gps_find, address, notes, img_name, maintenace_staus, img_optional_1, img_optional_2,img_optional_3,mark_km,mark_ellapsed_time)'
             ,   createRouteTable    = 'CREATE TABLE IF NOT EXISTS ROUTETABLE (route_id INTEGER PRIMARY KEY, route_N, route_description )'
             ,   createActivityTable = 'CREATE TABLE IF NOT EXISTS ACTIVITYTABLE (activity_id INTEGER PRIMARY KEY, user_id, route_id, date_time_start, date_time_stop ,ellased_time, km_travelled, number_of_marker)'
             ,   insert              = 'INSERT INTO USERTABLE (user_name, password, first_name, family_name, user_work_number) VALUES ("testuser","testuser","ifty","alam","9829055")';
@@ -119,13 +139,13 @@ var app = {
             alert(errorMsg);
         }
         navigator.camera.getPicture(cameraSuccess, cameraError,{
-                quality: 30,
-                destinationType: destinationType.FILE_URI,
-                saveToPhotoAlbum: false,
-                correctOrientation: true,
-                targetWidth: 1200,
-                targetHeight:1200
-             });
+            quality: 30,
+            destinationType: destinationType.FILE_URI,
+            saveToPhotoAlbum: false,
+            correctOrientation: true,
+            targetWidth: 1200,
+            targetHeight:1200
+        });
     },
     addMorePic: function(count) {
         var pictureSource   = navigator.camera.PictureSourceType // picture source
@@ -138,17 +158,17 @@ var app = {
             alert(errorMsg);
         }
         navigator.camera.getPicture(cameraSuccess, cameraError,{
-                quality: 10,
-                destinationType: destinationType.DATA_URL,
-                saveToPhotoAlbum: false,
-                correctOrientation: true,
-                targetWidth: 500,
-                targetHeight:500
-             });
+            quality: 10,
+            destinationType: destinationType.DATA_URL,
+            saveToPhotoAlbum: false,
+            correctOrientation: true,
+            targetWidth: 500,
+            targetHeight:500
+        });
     },
     gpsCurrent: function() {
-         var options = {
-                enableHighAccuracy: true
+        var options = {
+            enableHighAccuracy: true
         }
         var watchId     = navigator.geolocation.getCurrentPosition(onSuccess,onError,options)
         ,   latitude    = ''
@@ -218,6 +238,14 @@ var app = {
         });
         $('.inner-quick-maker').on('click', function() {
             app.openCamera();
+
+            // // TODO: to to be removed
+            //
+            // $('.first-selection, .route').hide();
+            // $('.status li a').removeClass('active')
+            // $('.confirm').show();
+
+
             app.gpsCurrent();
             // $('.confirm').show()
             app.confirmMetadata();
@@ -281,28 +309,32 @@ var app = {
         //mark damage with addition in table
         $('.mark-damage').on('click', function(e) {
             var itsDataMarkBtn  =   $(this).attr('data-markbtn');
-
+            // console.log(itsDataMarkBtn);
             e.preventDefault();
 
-            var userID      = $('.userid').text()
-            ,   date        = $('.date').text()
-            ,   time        = $('.time').text()
-            ,   latitide    = $('.lat span').text()
-            ,   longitude   = $('.long span').text()
-            ,   accuracy    = $('.accu span').text()
-            ,   address     = $('address').text()
-            ,   note        = $('#textarea1').val()
-            ,   status      = $('.status li a.active').attr('data-status')
-            ,   img         = $('.damg-img img').attr('src')
-            ,   base64Image = ''
-            ,   dataTime    = date + '|' + time
-            ,   gps_find    = latitide + ',' + longitude + ',' + accuracy
-            ,   selectQuery = 'SELECT * FROM DAMAGETABLE'
+            var userID          = $('.userid').text()
+            ,   date            = $('.date').text()
+            ,   time            = $('.time').text()
+            ,   latitide        = $('.lat span').text()
+            ,   longitude       = $('.long span').text()
+            ,   accuracy        = $('.accu span').text()
+            ,   address         = $('address').text()
+            ,   note            = $('#textarea1').val()
+            ,   status          = $('.status li a.active').attr('data-status')
+            ,   img             = $('.damg-img img').attr('src')
+            ,   base64Image     = ''
+            ,   dataTime        = date + '|' + time
+            ,   gps_find        = latitide + ',' + longitude + ',' + accuracy
             ,   thumbnailImg1   = $('.countimg-0').attr('src')
             ,   thumbnailImg2   = $('.countimg-1').attr('src')
             ,   thumbnailImg3   = $('.countimg-2').attr('src')
-            console.log(thumbnailImg1,thumbnailImg2,thumbnailImg3);
-
+            ,   selectActivity  = 'SELECT * FROM ACTIVITYTABLE ORDER BY activity_id DESC LIMIT 1'
+            // console.log(thumbnailImg1,thumbnailImg2,thumbnailImg3);
+            ,   userID = 1
+            // console.log(selectQuery);
+            // if (status == undefined && status == 'undefined') {
+            //     status = null
+            // }
             function getDataURL(url,callback) { // image url to base64
                 var image = new Image();
                 image.onload = function () {
@@ -316,42 +348,56 @@ var app = {
                 image.src = url;
             }
             getDataURL(img, function(base64URL) {
+                // console.log(userID);
                 if (userID != null && userID != undefined && userID != '') {
-                    var insertQuery     = 'INSERT INTO DAMAGETABLE (user_id, activity_id, date_time, gps_find, address, notes, img_name, maintenace_staus, img_optional_1, img_optional_2,img_optional_3) VALUES(?,?,?,?,?,?,?,?,?,?,?)';
+                    var insertQuery     = 'INSERT INTO DAMAGETABLE (user_id, activity_id, date_time, gps_find, address, notes, img_name, maintenace_staus, img_optional_1, img_optional_2,img_optional_3,mark_km,mark_ellapsed_time) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)';
 
                     // 'INSERT INTO USERTABLE (user_name, password, first_name, family_name, user_work_number) VALUES ("iftakhar","123456789","ifty","alam","9829055")';
-                    app.db.transaction(function(tx){
-                        tx.executeSql( insertQuery ,[userID,'null',dataTime,gps_find,address,note,base64URL,status,thumbnailImg1,thumbnailImg2,thumbnailImg3], function() {
-                            if(itsDataMarkBtn == 'outerBtn') {
+
+                    if(itsDataMarkBtn == 'outerBtn') {
+                        app.db.transaction(function(tx) {
+                            tx.executeSql( insertQuery ,[userID,null,dataTime,gps_find,address,note,base64URL,status,thumbnailImg1,thumbnailImg2,thumbnailImg3,null,null], function() {
                                 $('.confirm').hide();
                                 $('.first-selection').show();
-                            } else if (itsDataMarkBtn == 'innerBtn') {
-                                app.db.transaction(function(tx){
-                                    tx.executeSql( selectQuery, [], function(transaction, results) {
-                                        if( results.rows.length > 0 ) {
-                                            var markedDamages = results.rows.length;
-                                            $('.damages p').text(markedDamages);
-                                        } else {
-                                            // $('.damages p').text('0');
-                                        }
-                                    });
-                                });
-                                $('.first-selection').hide();
-                                $('.confirm').hide();
-                                $('.route').show();
-                            } else {
-                                // do nothing
-                            }
+                            });
                         });
-                    });
-                    // document.write(base64URL);
+                    } else if (itsDataMarkBtn == 'innerBtn') {
+                        // console.log('i');
+                        app.db.transaction(function(tx){
+                            tx.executeSql( selectActivity, [], function(transaction, results) {
+                                if (results.rows.length > 0) {
+                                    var activityID    = results.rows.item(0).activity_id
+                                    ,   ellapsedTime  = $('#time2').text()
+                                    tx.executeSql( insertQuery ,[userID,activityID,dataTime,gps_find,address,note,base64URL,status,thumbnailImg1,thumbnailImg2,thumbnailImg3,'null1',ellapsedTime], function() {
+                                        var selectQuery     = 'SELECT * FROM DAMAGETABLE WHERE activity_id = '+activityID+''
+                                        tx.executeSql( selectQuery, [], function(transaction, results) {
+                                            if( results.rows.length > 0 ) {
+                                                $('#time2').stopwatch().stopwatch('toggle');
+                                                $('#time2').stopwatch().stopwatch('reset').stopwatch('start');
+                                                var markedDamages = results.rows.length;
+                                                $('.damages p').text(markedDamages);
+                                            } else {
+                                                $('.damages p').text('0');
+                                            }
+                                            $('.first-selection').hide();
+                                            $('.confirm').hide();
+                                            $('.route').show();
+                                        })
+                                    });
+                                }
+                            })
+                        })
+                        app.distanceGps(latitide,longitude)
+                    } else {
+                        // do nothing
+                    }
                 }
             });
         })
 
         //ordinary button route selection page shown
         $('.ordinary-btn').on('click', function() {
-            $('.first-selection').hide();
+            $('.first-selection, .confirm').hide();
             $('.route-selection').show();
         });
         $('.route-container .selections-btn').on('click', function() {
@@ -361,6 +407,7 @@ var app = {
         });
 
         $('.start-activity').on('click', function() {
+
             var date = new Date()
             ,   cdate    = date.getDate()
             ,   cmonth   = date.getMonth()
@@ -371,35 +418,55 @@ var app = {
             ,   currentDate = cdate + '/' + cmonth + '/' + cyear +'|' + chours + ':' + cmin +':' + csec
             // console.log(currentDate);
             localStorage.setItem('LS_StartTime', currentDate);
-            var routeNumber     = $(this).attr('data-routeid')
-            ,   insertQuery     = 'INSERT INTO ROUTETABLE (route_N, route_description) VALUES(?,?)'
-            ,   date            = new Date()
-            ,   dates           = date.getDate()
-            ,   month           = date.getMonth() + 1
-            ,   year            = date.getFullYear()
-            ,   formatedDate    = dates + "/" + month + "/" + year
-            ,   hours           = date.getHours()
-            ,   min             = date.getMinutes()
-            ,   formatedTime    = hours + ":" + min
-            ,   currentDate     = formatedDate
-            ,   currentTime     = formatedTime
-            ,   selectQuery     = 'SELECT * FROM DAMAGETABLE'
-
+            var routeNumber         = $(this).attr('data-routeid')
+            ,   insertQuery         = 'INSERT INTO ROUTETABLE (route_N, route_description) VALUES(?,?)'
+            ,   date                = new Date()
+            ,   dates               = date.getDate()
+            ,   month               = date.getMonth() + 1
+            ,   year                = date.getFullYear()
+            ,   formatedDate        = dates + "/" + month + "/" + year
+            ,   hours               = date.getHours()
+            ,   min                 = date.getMinutes()
+            ,   formatedTime        = hours + ":" + min
+            ,   currentDate         = formatedDate
+            ,   currentTime         = formatedTime
+            ,   insertActivityQuery = 'INSERT INTO ACTIVITYTABLE (user_id,route_id,date_time_start, date_time_stop, ellased_time, km_travelled, number_of_marker) VALUES(?,?,?,?,?,?,?)'
+            ,   userID              = localStorage.getItem('LS_userId')
+            ,   selectLastRoute     = 'SELECT route_id FROM ROUTETABLE ORDER BY route_id DESC LIMIT 1 '
+            ,   activityStartDate   = localStorage.getItem('LS_StartTime')
             // console.log(year);
             // console.log(routeId);
 
             // insert query for selected route
+            // console.log(routeNumber);
+
             app.db.transaction(function(tx){
-                tx.executeSql( insertQuery ,[routeNumber,null]);
-                tx.executeSql( selectQuery, [], function(transaction, results) {
-                    if( results.rows.length > 0 ) {
-                        var markedDamages = results.rows.length;
-                        // console.log(markedDamages);
-                        $('.damages p').text(markedDamages);
-                    } else {
-                        // do nothing
-                        $('.damages p').text('0');
-                    }
+                tx.executeSql( insertQuery ,[routeNumber,null], function() {
+                    tx.executeSql( selectLastRoute, [], function(transaction, results) {
+                        if (results.rows.length > 0) {
+                            var activity_route_id  = results.rows.item(0).route_id
+                            tx.executeSql( insertActivityQuery ,[userID,activity_route_id,activityStartDate,null,null,null,null], function() {
+                                var selectActivity  = 'SELECT * FROM ACTIVITYTABLE ORDER BY activity_id DESC LIMIT 1'
+
+                                tx.executeSql( selectActivity, [], function(transaction, results) {
+                                    if (results.rows.length > 0) {
+                                        var activityID  = results.rows.item(0).activity_id
+                                        ,   selectQuery         = 'SELECT * FROM DAMAGETABLE WHERE activity_id = "' +activityID+'"'
+
+                                        tx.executeSql( selectQuery, [], function(transaction, results) {
+                                            //  console.log(results);
+                                            if( results.rows.length > 0 ) {
+                                                var markedDamages = results.rows.length;
+                                                $('.damages p').text(markedDamages);
+                                            } else {
+                                                $('.damages p').text('0');
+                                            }
+                                        });
+                                    }
+                                })
+                            });
+                        }
+                    })
                 });
             });
             $('.route-selection').hide();
@@ -409,58 +476,35 @@ var app = {
             $('.route-time .date-routen').text(formatedDate);
             $('.route-time time').text(formatedTime)
             // app.startTimer(true);
-            $('#time').stopwatch().stopwatch('reset').stopwatch('start');
+            $('#time, #time2').stopwatch().stopwatch('reset').stopwatch('start');
 
             app.runningClock();
-            //app.travelledDistance();
 
-            // function updateTime(prev_hours, prev_minutes, prev_seconds, prev_milliseconds){
-            //     var startTime = new Date();    // fetch current time
-            //
-            //     timeUpdate = setInterval(function () {
-            //         var timeElapsed = new Date().getTime() - startTime.getTime();    // calculate the time elapsed in milliseconds
-            //
-            //         // calculate hours
-            //         hours = parseInt(timeElapsed / 1000 / 60 / 60) + prev_hours;
-            //
-            //         // calculate minutes
-            //         minutes = parseInt(timeElapsed / 1000 / 60) + prev_minutes;
-            //         if (minutes > 60) minutes %= 60;
-            //
-            //         // calculate seconds
-            //         seconds = parseInt(timeElapsed / 1000) + prev_seconds;
-            //         if (seconds > 60) seconds %= 60;
-            //
-            //         // calculate milliseconds
-            //         milliseconds = timeElapsed + prev_milliseconds;
-            //         if (milliseconds > 1000) milliseconds %= 1000;
-            //
-            //         // set the stopwatch
-            //         setStopwatch(hours, minutes, seconds, milliseconds);
-            //
-            //     }, 25); // update time in stopwatch after every 25ms
-            //
-            // }
-            //
-            // // Set the time in stopwatch
-            // function setStopwatch(hours, minutes, seconds, milliseconds){
-            //     $("#hours").html(prependZero(hours, 2));
-            //     $("#minutes").html(prependZero(minutes, 2));
-            //     $("#seconds").html(prependZero(seconds, 2));
-            //     $("#milliseconds").html(prependZero(milliseconds, 3));
-            // }
-            //
-            // // Prepend zeros to the digits in stopwatch
-            // function prependZero(time, length) {
-            //     time = new String(time);    // stringify time
-            //     return new Array(Math.max(length - time.length + 1, 0)).join("0") + time;
-            // }
+            var options = {
+                enableHighAccuracy: true
+            }
+            navigator.geolocation.getCurrentPosition(onSuccess,onError,options)
+            var latitude    = ''
+            ,   longitude   = '';
+
+            function onSuccess(position) {
+                latitude  = position.coords.latitude
+                longitude = position.coords.longitude
+
+                localStorage.setItem('DS_LAT',latitude)
+                localStorage.setItem('DS_LONG',longitude)
+                // app.distanceGps()
+            }
+            function onError(error) {
+                alert(error.message)
+            }
         });
 
         $('.back-to-route').on('click', function() {
             $('.map').hide();
-            $('.route').show();
+            $('.first-selection').show();
         });
+
         //add more pic button
         $('.add-pic').on('click', function(e) {
             e.preventDefault();
@@ -478,66 +522,69 @@ var app = {
 
         $('.btn.marker').on('click', function(e) {
             e.preventDefault();
-            // alert(0)
-            // var locationArray   = []
-            var selectQuery     = 'SELECT gps_find FROM DAMAGETABLE'
-            // var locationArray = []
-
+            var showListQuery = 'SELECT DAMAGETABLE.user_id, ACTIVITYTABLE.route_id,DAMAGETABLE.date_time, DAMAGETABLE.mark_ellapsed_time, DAMAGETABLE.mark_km, DAMAGETABLE.img_name, DAMAGETABLE.gps_find, DAMAGETABLE.address, DAMAGETABLE.maintenace_staus FROM DAMAGETABLE LEFT JOIN ACTIVITYTABLE ON DAMAGETABLE.activity_id= ACTIVITYTABLE.activity_id ORDER BY DAMAGETABLE.damage_id DESC '
             var locationArray = []
+            var directionsService = new google.maps.DirectionsService();
 
-            app.db.transaction(function(tx){
-                tx.executeSql( selectQuery, [], function(transaction, results) {
-                    localStorage.setItem('LS_length',results.rows.length)
-                    if( results.rows.length > 0 ) {
+            app.db.transaction(function(tx) {
+                tx.executeSql( showListQuery, [], function(transaction, results) {
+                    if (results.rows.length > 0) {
+                        localStorage.setItem('LS_length', results.rows.length)
                         for (var i = 0; i < results.rows.length; i++) {
-                            var gpsCordinates       = results.rows.item(i).gps_find
-                            ,   cordinatesLatitude  = gpsCordinates.split(',')[0]
-                            ,   cordinatesLongitude = gpsCordinates.split(',')[1]
+                            var row             = results.rows.item(i)
+                            ,   dateTime        = row.date_time
+                            ,   kmTravelled     = row.mark_km
+                            ,   img             = row.img_name
+                            ,   address         = row.address
+                            ,   gps             = row.gps_find.split(',')
+                            ,   lat             = gps[0]
+                            ,   long            = gps[1]
 
                             var locationObject = {}
+                            locationObject ["lat"]      = lat
+                            locationObject ["long"]     = long
+                            locationObject ["address"]  = address
+                            locationObject ["km"]       = kmTravelled
+                            locationObject ["time"]     = dateTime
+                            locationObject ["img"]      = img
 
-                            locationObject ["lat"]      = cordinatesLatitude
-                            locationObject ["long"]     = cordinatesLongitude
-
-                            locationArray.push( locationObject )
-                            function getAddressFromLatLang(lat,lng) {
-                                // var locationObject = {}
-                                // locationObject ["lat"]      = lat
-                                // locationObject ["long"]     = lng
-                                // var a
-                                var geocoder = new google.maps.Geocoder();
-                                var latLng = new google.maps.LatLng(lat, lng);
-                                geocoder.geocode( { 'latLng': latLng}, function(resultss, status) {
-                                    if (status == google.maps.GeocoderStatus.OK) {
-                                        // console.log(resultss);
-                                        // a = resultss[1].formatted_address
-                                        // locationObject ["lat"]      = lat
-                                        // locationObject ["long"]     = lng
-                                        // locationObject ["address"]  = a
-                                    }else{
-                                        alert("Geocode was not successful for the following reason: " + status);
-                                    }
-                                });
-                                // locationArray.push(locationObject)
-                            }
-                            getAddressFromLatLang(cordinatesLatitude,cordinatesLongitude);
+                            locationArray.push(locationObject)
+                            // function getAddressFromLatLang(lat,lng) {
+                            //     var a
+                            //     var geocoder = new google.maps.Geocoder();
+                            //     var latLng = new google.maps.LatLng(lat, lng);
+                            //     geocoder.geocode( { 'latLng': latLng}, function(resultss, status) {
+                            //         if (status == google.maps.GeocoderStatus.OK) {
+                            //             a = resultss[0].formatted_address
+                            //             locationObject ["address"]  = a
+                            //         }else{
+                            //             alert("Geocode was not successful for the following reason: " + status);
+                            //         }
+                            //     });
+                            //     locationArray.push(locationObject)
+                            // }
+                            // getAddressFromLatLang(cordinatesLatitude,cordinatesLongitude);
                         }
                     } else {
                         alert('No marked damages yet.Please mark the damges first');
                     }
                     // console.log(locationArray);
+                    directionsDisplay = new google.maps.DirectionsRenderer();
                     var map = new google.maps.Map(document.getElementById('googleMap'), {
                         zoom: 4,
-                        center: new google.maps.LatLng(15.92, 80.25),
+                        center: new google.maps.LatLng(lat,long),
                         mapTypeId: google.maps.MapTypeId.ROADMAP
                     });
-                    //
-                    //
+
+                    directionsDisplay.setMap(map);
+                    var request = {
+                        travelMode: google.maps.TravelMode.DRIVING
+                    };
                     var infowindow = new google.maps.InfoWindow();
-                    //
                     var marker, i;
+
+                    // setTimeout(function() {
                     for (i = 0; i < locationArray.length; i++) {
-                        // console.log(locationArray[i].lat);
                         marker = new google.maps.Marker({
                             position: new google.maps.LatLng(locationArray[i].lat, locationArray[i].long),
                             map: map
@@ -545,18 +592,18 @@ var app = {
 
                         google.maps.event.addListener(marker, 'click', (function(marker, i) {
                             return function() {
-                                infowindow.setContent(locationArray[i].address);
+                                var infoContentHTML = '<div id="infowindow"> <figure class="col s4"> <img src="'+locationArray[i].img+'" class="responsive-img" alt=""> </figure> <article class="content-map col s8"> <div><span class="bold">Address</span> <span>'+locationArray[i].address+'</span></div> <div><span class="bold">Travelled km</span> <span>'+locationArray[i].km+'</span></div> <div><span class="bold">Time</span> <span>'+locationArray[i].time+'</span></div> </article> </div>'
+                                infowindow.setContent(infoContentHTML);
                                 infowindow.open(map, marker);
                             }
-                        })(marker, i));
+                        })(marker, i))
                     }
-
                     var length = localStorage.getItem('LS_length')
                     if (length > 0) {
-                        $('.route').hide();
+                        $('.first-selection').hide();
                         $('.map').show();
                     } else {
-                        $('.route').show();
+                        $('.first-selection').show();
                         $('.map').hide();
                     }
                 });
@@ -571,31 +618,82 @@ var app = {
         $('.stop-activity').on('click', function() {
             var currentTime  = localStorage.getItem('LS_StartTime');
 
-            var routeId      = $('.route-number').text()
-            ,   startTime    = $('.route-time').text()
-            ,   kmTravelled  = $('.distance').text()
-            ,   noOfMarker   = $('.damages p').text()
-            ,   userName     = $('.route .username').text()
-            ,   ellased_hr   = $('#time #hours').text()
-            ,   ellased_min  = $('#time #minutes').text()
-            ,   ellased_sec  = $('#time #seconds').text()
-            ,   ellased_time = ellased_hr + ':' + ellased_min + ':' + ellased_sec
-            ,   user_id      = localStorage.getItem('LS_userId')
-            ,   insertQuery  = 'INSERT INTO ACTIVITYTABLE (user_id,route_id, date_time_start, date_time_stop, ellased_time, km_travelled, number_of_marker) VALUES(?,?,?,?,?,?,?)'
-            console.log(ellased_time);
+            var routeId         = $('.route-number').text()
+            ,   startTime       = $('.route-time').text()
+            ,   kmTravelled     = $('.distance').text()
+            ,   noOfMarker      = $('.damages p').text()
+            ,   userName        = $('.route .username').text()
+            //,   ellased_hr   = $('#time #hours').text()
+            //,   ellased_min  = $('#time #minutes').text()
+            //,   ellased_sec  = $('#time #seconds').text()
+            //,   ellased_time = ellased_hr + ':' + ellased_min + ':' + ellased_sec
+            ,   ellased_time    = $('#time').text()
+            ,   user_id         = localStorage.getItem('LS_userId')
+            // ,   insertQuery     = 'INSERT INTO ACTIVITYTABLE (user_id,route_id, date_time_start, date_time_stop, ellased_time, km_travelled, number_of_marker) VALUES(?,?,?,?,?,?,?)'
+            ,   selectActivity  = 'SELECT * FROM ACTIVITYTABLE ORDER BY activity_id DESC LIMIT 1'
+            // ,   updateQuery     = 'UPDATE ACTIVITYTABLE SET date_time_stop = ?, ellased_time = ?, km_travelled = ?, number_of_marker = ? WHERE activity_id = "' +aId+'"'
+            // console.log(ellased_time);
             // console.log(selectQuery);
-            console.log(routeId,startTime,kmTravelled,noOfMarker);
+            // console.log(routeId,startTime,kmTravelled,noOfMarker);
 
             app.db.transaction(function(tx) {
-                tx.executeSql( insertQuery ,[user_id,routeId,currentTime,startTime,ellased_time,kmTravelled,noOfMarker]);
+                tx.executeSql( selectActivity, [], function(transaction, results) {
+                    if (results.rows.length > 0) {
+                        var activityID  = results.rows.item(0).activity_id
+
+                        var updateQuery     = 'UPDATE ACTIVITYTABLE SET date_time_stop = ?, ellased_time = ?, km_travelled = ?, number_of_marker = ? WHERE activity_id = "' +activityID+'"'
+
+                        console.log(updateQuery);
+
+                        tx.executeSql( updateQuery ,[startTime,ellased_time,kmTravelled,noOfMarker]);
+                    }
+                })
             })
             $('.route').hide();
             $('.first-selection').show();
-            $('#time').stopwatch().stopwatch('toggle')
-            $('#time').text('00:00:00')
+            $('#time,#time2').stopwatch().stopwatch('toggle')
+
+            $('#time, #time2').text('00:00:00')
+            $('distance').text('')
             // app.startTimer(false)
             // console.log(user_id);
         });
+
+        // list view
+
+        $('.btn.list').on('click', function(e) {
+            e.preventDefault();
+
+            var showListQuery = 'SELECT DAMAGETABLE.user_id, ACTIVITYTABLE.route_id,DAMAGETABLE.date_time, DAMAGETABLE.mark_ellapsed_time, DAMAGETABLE.mark_km, DAMAGETABLE.img_name, DAMAGETABLE.gps_find, DAMAGETABLE.address, DAMAGETABLE.maintenace_staus FROM DAMAGETABLE LEFT JOIN ACTIVITYTABLE ON DAMAGETABLE.activity_id= ACTIVITYTABLE.activity_id ORDER BY DAMAGETABLE.damage_id DESC '
+            ,   listBody =''
+            ,   userName        = localStorage.getItem('LS_Auth')
+            app.db.transaction(function(tx) {
+                tx.executeSql( showListQuery, [], function(transaction, results) {
+                    if (results.rows.length > 0) {
+                        for (var i = 0; i < results.rows.length; i++) {
+                            var row             = results.rows.item(i)
+                            ,   routeNumber     = row.route_id
+                            ,   dateTime        = row.date_time
+                            ,   kmTravelled     = row.mark_km
+                            ,   ellapsed        = row.mark_ellapsed_time
+                            ,   img             = row.img_name
+                            ,   gps             = row.gps_find
+                            ,   address         = row.address
+                            ,   maintenaceStatus = row.maintenace_staus
+
+                            // console.log(routeNumber);
+                            listBody = listBody +  '<tr> <td> <img src="'+img+'" width="100px" height="100px" alt=""> </td><td>'+userName+'</td><td>'+routeNumber+'</td><td>'+dateTime+'</td><td>'+kmTravelled+'km</td><td>'+ellapsed+'</td><td>'+address+'</td><td> '+maintenaceStatus+' </td></tr>'
+                        }
+                        // console.log(listBody);
+                        $('#list tbody').html(listBody)
+                        // console.log(results);
+                    } else {
+                        alert('Sorry no damages marked yet');
+                        $('#list').modal('close');
+                    }
+                })
+            })
+        })
     },
     loginForm: function() {
         var username = $('#username').val()
@@ -672,48 +770,80 @@ var app = {
         // alert(localUserId);
         $('.userid').text(localUserId);
     },
-    travelledDistance: function() {
-        var options = {
-               enableHighAccuracy: true
-       }
-       // get startPostion
-        var currentId     = navigator.geolocation.getCurrentPosition(onSuccess,onError,options)
+    travelledDistance: function(lat,long) {
+        console.log(lat,long);
 
-        function onSuccess(position) {
-            // startPostion = position
-            var startLat    = position.coords.latitude
-            ,   startLong     = position.coords.longitude
+        function calculateDistance(lat1, lon1, lat2, lon2)  {
+            alert(lat2)
+            var R = 6371; // km
+            var dLat = (lat2 - lat1).toRad();
+            var dLon = (lon2 - lon1).toRad();
+            var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(lat1.toRad()) * Math.cos(lat2.toRad()) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            var d = R * c;
 
-            localStorage.setItem('LS_startLat',startLat);
-            localStorage.setItem('LS_startLong',startLong);
+            alert(d)
+            return d;
+        }
+        Number.prototype.toRad = function() {
+            return this * Math.PI / 180;
         }
 
-        function onError(error) {
-            alert(error.message)
+        var options = {timeout:60000,enableHighAccuracy: true};
+
+        // setInterval(function() {
+        function showLocation(position) {
+            var wlatitude = position.coords.latitude;
+            var wlongitude = position.coords.longitude;
+            var accuracy = position.coords.accuracy
+
+            localStorage.setItem('LS_DistanceLat', wlatitude);
+            localStorage.setItem('LS_DistanceLong', wlongitude);
+            // alert(accuracy)
+            // if (accuracy == 14) {
+            //     var calculateDistance = calculateDistance(lat, long, wlatitude, wlongitude);
+            //     // console.log(a);
+            //     alert(calculateDistance)
+            // } else if (accuracy == 12) {
+            //     var calculateDistance = calculateDistance(lat, long, wlatitude, wlongitude);
+            //     // console.log(a);
+            //     alert(calculateDistance)
+            // } else if (accuracy == 10) {
+            //     var calculateDistance = calculateDistance(lat, long, wlatitude, wlongitude);
+            //     // console.log(a);
+            //     alert(calculateDistance)
+            // }  else if (accuracy < 8) {
+            //     var calculateDistance = calculateDistance(lat, long, wlatitude, wlongitude);
+            //     // console.log(a);
+            //     alert(calculateDistance)
+            // }
+
+            // console.log(wlatitude);
+            // alert("old lat : " + lat + " old long: " + long + "/" + "Latitude : " + wlatitude + " Longitude: " + wlongitude);
+
+            // var calculateDistance = calculateDistance(lat, long, position.coords.latitude, position.coords.longitude);
+            // // console.log(a);
+            // alert(calculateDistance)
+            // $('.distance').text(calculateDistance)
         }
+        // },60000)
 
-        // watch position
-        var clearInterval = setInterval(function(){
-            navigator.geolocation.getCurrentPosition(watchSuccess,watchError,{enableHighAccuracy: true })
-
-            function watchSuccess(position) {
-
-                // alert(position.coords.latitude)
-                var lat1    = localStorage.getItem('LS_startLat')
-                ,   long1   = localStorage.getItem('LS_startLong')
-                // console.log(lat1,long1);
-
-                var distance = app.distanceCalculator(lat1,long1,position.coords.latitude, position.coords.longitude, 'K');
-                //var distance = distance(26.796665,75.813835,25.223317, 75.880711, 'K');
-                //round to 3 decimal places
-                var calcutedDistance    =   Math.round(distance*1000)/1000
-                $('.traveled .distance').text(calcutedDistance);
-            }
-            function watchError(error) {
-                alert(error.message)
-            }
-        }, 3000);
-        //distance calculator
+        function errorHandler(err) {
+            alert(err.message)
+        }
+        // setInterval(function() {
+        //         var l1 = localStorage.getItem('LS_DistanceLat')
+        //         ,   l2 = localStorage.getItem('LS_DistanceLong')
+        //
+        //         // alert(l1 + ":" + l2)
+        //         // var cal = calculateDistance(lat, long, l1, l2);
+        //         // alert(cal)
+        // },30000)
+        // setInterval(function() {
+        var watchId = navigator.geolocation.watchPosition(showLocation,errorHandler,options)
+        // },60000)
 
     },
     distanceCalculator: function(lat1, lon1, lat2, lon2, unit) {
@@ -731,62 +861,50 @@ var app = {
         if (unit=="K") { dist = dist * 1.609344 }
         if (unit=="N") { dist = dist * 0.8684 }
         return dist
-// }
+        // }
     },
-    startTimer: function(boolen) {
-        // var hours = minutes = seconds = milliseconds = 0;
-        // var prev_hours = prev_minutes = prev_seconds = prev_milliseconds = undefined;
-        // var timeUpdate;
-        //
-        // console.log(boolen);
-        // updateTime(0,0,0,0);
-        //
-        // function updateTime(prev_hours, prev_minutes, prev_seconds, prev_milliseconds){
-        //     var startTime = new Date();    // fetch current time
-        //     // if (value == true) {
-        //         timeUpdate = setInterval(function () {
-        //
-        //             var timeElapsed = new Date().getTime() - startTime.getTime();    // calculate the time elapsed in milliseconds
-        //
-        //             // calculate hours
-        //             hours = parseInt(timeElapsed / 1000 / 60 / 60) + prev_hours;
-        //
-        //             // calculate minutes
-        //             minutes = parseInt(timeElapsed / 1000 / 60) + prev_minutes;
-        //             if (minutes > 60) minutes %= 60;
-        //
-        //             // calculate seconds
-        //             seconds = parseInt(timeElapsed / 1000) + prev_seconds;
-        //             if (seconds > 60) seconds %= 60;
-        //
-        //             // calculate milliseconds
-        //             milliseconds = timeElapsed + prev_milliseconds;
-        //             if (milliseconds > 1000) milliseconds %= 1000;
-        //             console.log(timeUpdate);
-        //             // set the stopwatch
-        //             setStopwatch(hours, minutes, seconds, milliseconds);
-        //
-        //         }, 25); // update time in stopwatch after every 25ms
-        //
-        // }
-        //
-        // // console.log(timeUpdate);
-        // // if (boolen == false) {
-        // //     if(timeUpdate) clearInterval(timeUpdate);
-        // //     setStopwatch(0,0,0,0);
-        // // }
-        // // Set the time in stopwatch
-        // function setStopwatch(hours, minutes, seconds, milliseconds){
-        //     $("#hours").html(prependZero(hours, 2));
-        //     $("#minutes").html(prependZero(minutes, 2));
-        //     $("#seconds").html(prependZero(seconds, 2));
-        //     $("#milliseconds").html(prependZero(milliseconds, 3));
-        // }
-        //
-        // // Prepend zeros to the digits in stopwatch
-        // function prependZero(time, length) {
-        //     time = new String(time);    // stringify time
-        //     return new Array(Math.max(length - time.length + 1, 0)).join("0") + time;
-        // }
+    distanceGps: function(d1,d2) {
+        // alert(d1)
+        var o1 =  localStorage.getItem('DS_LAT')
+        ,   o2 =  localStorage.getItem('DS_LONG')
+        ,   origin = o1+','+o2
+        ,   destination = d1+','+d2
+
+        console.log(origin);
+        var previousDistance = parseInt($('.distance').text())
+
+        // console.log(previousDistance + 2);
+        $.ajax({
+            url: 'https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins='+origin+'&destinations='+destination+'&key=AIzaSyB19sTSic7D289n7a8x4WqXTSbGGFo26vc',
+            type: "GET",
+            success: function(resp) {
+                var distance = resp.rows[0].elements[0].distance.value
+                ,   finalDistance = (distance / 1000) + previousDistance
+                ,   markKM       = finalDistance.toFixed(2)
+                ,   selectQuery   = 'SELECT damage_id FROM DAMAGETABLE ORDER BY damage_id DESC LIMIT 1'
+                ,   updateQuery   = 'UPDATE DAMAGETABLE SET mark_km = ?'
+
+                app.db.transaction(function(tx){
+                    tx.executeSql( selectQuery, [], function(transaction, results) {
+                        if (results.rows.length > 0) {
+                            var damageID  = results.rows.item(0).damage_id
+
+                            var updateQuery   = 'UPDATE DAMAGETABLE SET mark_km = ? WHERE damage_id = "' +damageID+'"'
+                            tx.executeSql( updateQuery ,[markKM]);
+                        }
+                    })
+                })
+                $('.distance').text(finalDistance.toFixed(2))
+                
+            },
+            error: function() {
+                //  console.log('error');
+                alert('Something went wrong. Your travelling distance not determined yet ');
+            }
+        })
+
+        localStorage.setItem('DS_LAT',d1)
+        localStorage.setItem('DS_LONG',d2)
+
     }
 };

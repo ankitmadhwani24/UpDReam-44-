@@ -3,3 +3,9 @@
 @import "custom/app";
 @import "custom/helper";
 @import "custom/modal";
+
+table {
+    td,th {
+        min-width: 234px;
+    }
+}
