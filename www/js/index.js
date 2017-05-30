@@ -16,8 +16,13 @@
 * specific language governing permissions and limitations
 * under the License.
 */
+var activityFormField = {}
+,   postActivityData
 
 var app = {
+    // baseURL: 'http://dream123.herokuapp.com/api/',
+    baseURL: 'http://151.1.140.232:3388/api/',
+
     // Application Constructor
     initialize: function() {
         this.bindEvents();
@@ -31,19 +36,21 @@ var app = {
         window.addEventListener('load', this.onPageReady, false);
     },
     onPageReady:    function() {
+
         // var onlineStatus = navigator.onLine ?  'online' : 'offline'
         // if (onlineStatus == 'online') {
-        app.apiEvents();
+            // app.apiEvents();
         // } else {
         //     alert("It's seems that you are not connected with internet. Please make sure that you have an active internet");
         // }
         // app.loginForm();
+
         var getToken = localStorage.getItem('LS_Auth');
         console.log(getToken);
         // alert(getToken);
         if( typeof getToken != undefined && getToken != null ) {
-            // alert(getToken);
             $('.login-page').hide();
+            // alert(getToken);
             // localStorage.setItem('LS_Auth',userNameDB);
             $('.first-selection').show();
             $('.username').text(getToken);
@@ -53,33 +60,58 @@ var app = {
             ,   createQuickMarker   = 'CREATE TABLE IF NOT EXISTS DAMAGETABLE(damage_id INTEGER PRIMARY KEY, user_id, activity_id, date_time, gps_find, address, notes, img_name, maintenace_staus, img_optional_1, img_optional_2,img_optional_3,mark_km,mark_ellapsed_time)'
             ,   createRouteTable    = 'CREATE TABLE IF NOT EXISTS ROUTETABLE (route_id INTEGER PRIMARY KEY, route_N, route_description )'
             ,   createActivityTable = 'CREATE TABLE IF NOT EXISTS ACTIVITYTABLE (activity_id INTEGER PRIMARY KEY, user_id, route_id, date_time_start, date_time_stop ,ellased_time, km_travelled, number_of_marker)'
+            ,   createGPSTable      = 'CREATE TABLE IF NOT EXISTS GPSTABLE (gps_activity INTEGER PRIMARY KEY, activity_id, date, gps_lat, gps_long)'
             ,   insert              = 'INSERT INTO USERTABLE (user_name, password, first_name, family_name, user_work_number) VALUES ("testuser","testuser","ifty","alam","9829055")';
+
+            // app.ajaxCall('GET','getUsers',null, function(userdataAPI) {
+            //     console.log(userdataAPI.users);
+            //     if (userdataAPI != null && userdataAPI.users !=undefined && userdataAPI != 'ajaxError') {
+            //         console.log("hi");
+            //     }
+            // })
 
             app.db.transaction(function (tx) {
                 tx.executeSql(createUserTabel);
                 tx.executeSql(createQuickMarker);
                 tx.executeSql(createRouteTable);
                 tx.executeSql(createActivityTable);
-                tx.executeSql(insert);
+                tx.executeSql(createGPSTable);
+                //tx.executeSql(insert);
             });
 
         } else {
-            // alert('e')
-            // console.log("x");
             app.db = openDatabase("Dream_App", "1.0", "Dream App", 5 * 1024 * 1024) //Create database
             var createUserTabel     = 'CREATE TABLE IF NOT EXISTS USERTABLE (user_id INTEGER PRIMARY KEY, user_name unique, password, first_name, family_name, user_work_number)'
             ,   createQuickMarker   = 'CREATE TABLE IF NOT EXISTS DAMAGETABLE(damage_id INTEGER PRIMARY KEY, user_id, activity_id, date_time, gps_find, address, notes, img_name, maintenace_staus, img_optional_1, img_optional_2,img_optional_3,mark_km,mark_ellapsed_time)'
             ,   createRouteTable    = 'CREATE TABLE IF NOT EXISTS ROUTETABLE (route_id INTEGER PRIMARY KEY, route_N, route_description )'
             ,   createActivityTable = 'CREATE TABLE IF NOT EXISTS ACTIVITYTABLE (activity_id INTEGER PRIMARY KEY, user_id, route_id, date_time_start, date_time_stop ,ellased_time, km_travelled, number_of_marker)'
-            ,   insert              = 'INSERT INTO USERTABLE (user_name, password, first_name, family_name, user_work_number) VALUES ("testuser","testuser","ifty","alam","9829055")';
+            ,   createGPSTable      = 'CREATE TABLE IF NOT EXISTS GPSTABLE (gps_activity INTEGER PRIMARY KEY, activity_id, date, gps_lat, gps_long)'
 
+            app.showLoadingFx();
             app.db.transaction(function (tx) {
                 tx.executeSql(createUserTabel);
                 tx.executeSql(createQuickMarker);
                 tx.executeSql(createRouteTable);
+                tx.executeSql(createGPSTable);
                 tx.executeSql(createActivityTable);
-                tx.executeSql(insert);
             });
+            // get user data from ajax call
+            app.ajaxCall('GET','getUsers',null, function(userdataAPI) {
+                console.log(userdataAPI);
+                if (userdataAPI != null && userdataAPI.users !=undefined && userdataAPI != 'ajaxError') {
+                    var userLength = userdataAPI.users.length
+                    for (var i = 0; i < userLength; i++) {
+                        var userName    = userdataAPI.users[i].user_name
+                        ,   password    = userdataAPI.users[i].password
+                        ,   firstName   = userdataAPI.users[i].first_name
+                        ,   familyName  = userdataAPI.users[i].family_name
+                        ,   number      = userdataAPI.users[i].user_work_number
+
+                        app.insertUserdata(userName,password,firstName,familyName,number,i)
+                    }
+                }
+            })
+
         }
     },
     // deviceready Event Handler
@@ -139,7 +171,7 @@ var app = {
             alert(errorMsg);
         }
         navigator.camera.getPicture(cameraSuccess, cameraError,{
-            quality: 30,
+            quality: 10,
             destinationType: destinationType.FILE_URI,
             saveToPhotoAlbum: false,
             correctOrientation: true,
@@ -170,11 +202,18 @@ var app = {
         var options = {
             enableHighAccuracy: true
         }
+        // navigator.geolocation.getAccurateCurrentPosition(onSuccess, onError, onProgress, options);
         var watchId     = navigator.geolocation.getCurrentPosition(onSuccess,onError,options)
-        ,   latitude    = ''
+        // navigator.geolocation.getAccurateCurrentPosition(onSuccess, onError, onProgress, options);
+        var   latitude    = ''
         ,   longitude   = ''
         ,   accuracy    = ''
         ,   address     =  '';
+
+        // function geoprogress() {
+        //     console.log("Locating");
+        //     // output.innerHTML = '<p>Locating in progress</p>';
+        // }
 
         function onSuccess(position) {
             latitude  = position.coords.latitude
@@ -218,7 +257,12 @@ var app = {
             $('#textarea1').val(' ')
             $('.add-pic').removeClass('disabled');
 
+            // TODO: uncoment
             app.openCamera();
+
+            // $('.first-selection, .route').hide();
+            // $('.status li a').removeClass('active')
+            // $('.confirm').show();
             // $('.confirm').show()
             app.gpsCurrent();
             app.confirmMetadata();
@@ -308,6 +352,7 @@ var app = {
 
         //mark damage with addition in table
         $('.mark-damage').on('click', function(e) {
+
             var itsDataMarkBtn  =   $(this).attr('data-markbtn');
             // console.log(itsDataMarkBtn);
             e.preventDefault();
@@ -323,18 +368,46 @@ var app = {
             ,   status          = $('.status li a.active').attr('data-status')
             ,   img             = $('.damg-img img').attr('src')
             ,   base64Image     = ''
-            ,   dataTime        = date + '|' + time
+            ,   dataTime        = date + ' ' + time
             ,   gps_find        = latitide + ',' + longitude + ',' + accuracy
             ,   thumbnailImg1   = $('.countimg-0').attr('src')
             ,   thumbnailImg2   = $('.countimg-1').attr('src')
             ,   thumbnailImg3   = $('.countimg-2').attr('src')
             ,   selectActivity  = 'SELECT * FROM ACTIVITYTABLE ORDER BY activity_id DESC LIMIT 1'
-            // console.log(thumbnailImg1,thumbnailImg2,thumbnailImg3);
-            ,   userID = 1
-            // console.log(selectQuery);
-            // if (status == undefined && status == 'undefined') {
-            //     status = null
-            // }
+            ,   dateToPost
+            ,   postDate        = date.split('-')
+            // todo remove userid
+            // ,   userID = 1
+            ,   damagaeFormField = {}
+            ,   postDamageData
+            ,   gpsFormField = {}
+            ,   postGPSData
+
+            postMonth  = postDate[1]
+            if (postMonth.length == 1) {
+                postMonth = '0'+postMonth
+            } else {
+                postMonth = postMonth
+            }
+            dateToPost = postDate[2]+'-'+postMonth+'-'+postDate[0]+' '+ time+':'+'00';
+
+            if (thumbnailImg1 == undefined) {
+                // console.log("!");
+                thumbnailImg1 = 'null'
+            }
+            if (thumbnailImg2 == undefined) {
+                thumbnailImg2 = 'null'
+            }
+            if (thumbnailImg3 == undefined) {
+                thumbnailImg3 = 'null'
+
+            }
+            if (status == undefined) {
+                status = 'null'
+            }
+            var dummyimage = ''
+            // console.log(dummyimage);
+            // console.log(thumbnailImg3);
             function getDataURL(url,callback) { // image url to base64
                 var image = new Image();
                 image.onload = function () {
@@ -347,16 +420,48 @@ var app = {
                 };
                 image.src = url;
             }
-            getDataURL(img, function(base64URL) {
-                // console.log(userID);
-                if (userID != null && userID != undefined && userID != '') {
-                    var insertQuery     = 'INSERT INTO DAMAGETABLE (user_id, activity_id, date_time, gps_find, address, notes, img_name, maintenace_staus, img_optional_1, img_optional_2,img_optional_3,mark_km,mark_ellapsed_time) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)';
 
+            // TODO: uncoment getDataURL
+
+            getDataURL(img, function(base64URL) {
+                if (userID != null && userID != undefined && userID != '') {
+                    var insertQuery     = 'INSERT INTO DAMAGETABLE (user_id, activity_id, date_time, gps_find, address, notes, img_name, maintenace_staus, img_optional_1, img_optional_2,img_optional_3,mark_km,mark_ellapsed_time) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)'
+                    ,   insertGPSQuery  = 'INSERT INTO GPSTABLE (activity_id, date, gps_lat, gps_long) VALUES (?,?,?,?)'
                     // 'INSERT INTO USERTABLE (user_name, password, first_name, family_name, user_work_number) VALUES ("iftakhar","123456789","ifty","alam","9829055")';
 
                     if(itsDataMarkBtn == 'outerBtn') {
                         app.db.transaction(function(tx) {
                             tx.executeSql( insertQuery ,[userID,null,dataTime,gps_find,address,note,base64URL,status,thumbnailImg1,thumbnailImg2,thumbnailImg3,null,null], function() {
+
+                                // damage form data for post
+                                damagaeFormField ["user_id"]          = userID
+                                damagaeFormField ["activity_id"]      = null
+                                damagaeFormField ["date_time"]        = dateToPost
+                                // TODO:  remove  00 cordinates
+                                damagaeFormField ["gps_find"]         = gps_find
+
+                                // damagaeFormField ["gps_find"]           = '00'
+                                damagaeFormField ["address"]            = address
+                                damagaeFormField ["notes"]              = note
+                                damagaeFormField ["img_name"]           = base64URL
+                                damagaeFormField ["maintenance_status"] = status
+                                damagaeFormField ["img_optional_1"]     = thumbnailImg1
+                                damagaeFormField ["img_optional_2"]     = thumbnailImg2
+                                damagaeFormField ["img_optional_3"]     = thumbnailImg3
+                                damagaeFormField ["mark_km"]            = "null"
+                                damagaeFormField ["mark_ellapsed_time"]  = "null"
+
+                                // postDamageData   = JSON.stringify(damagaeFormField)
+                                // console.log(postDamageData);
+
+                                var array = []
+                                array.push(damagaeFormField)
+                                postDamageData  = JSON.stringify(array)
+
+                                app.ajaxCall('POST','damage',postDamageData, function(resp) {
+                            //        console.log(resp);
+                                })
+
                                 $('.confirm').hide();
                                 $('.first-selection').show();
                             });
@@ -368,7 +473,57 @@ var app = {
                                 if (results.rows.length > 0) {
                                     var activityID    = results.rows.item(0).activity_id
                                     ,   ellapsedTime  = $('#time2').text()
-                                    tx.executeSql( insertQuery ,[userID,activityID,dataTime,gps_find,address,note,base64URL,status,thumbnailImg1,thumbnailImg2,thumbnailImg3,'null1',ellapsedTime], function() {
+                                    // TODO: remove baseURL quotes
+                                    tx.executeSql( insertQuery, [userID,activityID,dataTime,gps_find,address,note,base64URL,status,thumbnailImg1,thumbnailImg2,thumbnailImg3,'null',ellapsedTime], function() {
+
+                                        // damage form data for post
+                                        damagaeFormField ["user_id"]          = userID
+                                        damagaeFormField ["activity_id"]      = activityID
+                                        damagaeFormField ["date_time"]        = dateToPost
+                                        // TODO:  remove  00 cordinates
+                                        damagaeFormField ["gps_find"]         = gps_find
+
+                                        // damagaeFormField ["gps_find"]           = '00'
+                                        damagaeFormField ["address"]            = address
+                                        damagaeFormField ["notes"]              = note
+                                        damagaeFormField ["img_name"]           = base64URL
+                                        damagaeFormField ["maintenance_status"] = status
+                                        damagaeFormField ["img_optional_1"]     = thumbnailImg1
+                                        damagaeFormField ["img_optional_2"]     = thumbnailImg2
+                                        damagaeFormField ["img_optional_3"]     = thumbnailImg3
+                                        damagaeFormField ["mark_km"]            = "null"
+                                        damagaeFormField ["mark_ellapsed_time"]  = ellapsedTime
+
+                                        // postDamageData   = JSON.stringify(damagaeFormField)
+                                        // console.log(postDamageData);
+
+                                        var array = []
+                                        array.push(damagaeFormField)
+                                        postDamageData  = JSON.stringify(array)
+
+                                        app.ajaxCall('POST','damage',postDamageData, function(resp) {
+                                            //console.log(resp);
+                                        })
+
+                                        //  gps data  enter into GPSTABLE
+                                        tx.executeSql( insertGPSQuery, [activityID,dataTime,latitide,longitude], function() {
+
+                                            gpsFormField ["activity_id"]    = activityID
+                                            gpsFormField ["date"]           = dateToPost
+                                            gpsFormField ["gps_lat"]        = latitide
+                                            gpsFormField ["gps_long"]       = longitude
+
+                                            // postGPSData   = JSON.stringify(gpsFormField)
+                                            // console.log(postGPSData);
+
+                                            var array = []
+                                            array.push(gpsFormField)
+                                            postGPSData  = JSON.stringify(array)
+
+                                            app.ajaxCall('POST','gps',postGPSData, function(resp) {
+                                                // console.log(resp);
+                                            })
+                                        })
                                         var selectQuery     = 'SELECT * FROM DAMAGETABLE WHERE activity_id = '+activityID+''
                                         tx.executeSql( selectQuery, [], function(transaction, results) {
                                             if( results.rows.length > 0 ) {
@@ -407,7 +562,6 @@ var app = {
         });
 
         $('.start-activity').on('click', function() {
-
             var date = new Date()
             ,   cdate    = date.getDate()
             ,   cmonth   = date.getMonth()
@@ -432,8 +586,10 @@ var app = {
             ,   currentTime         = formatedTime
             ,   insertActivityQuery = 'INSERT INTO ACTIVITYTABLE (user_id,route_id,date_time_start, date_time_stop, ellased_time, km_travelled, number_of_marker) VALUES(?,?,?,?,?,?,?)'
             ,   userID              = localStorage.getItem('LS_userId')
-            ,   selectLastRoute     = 'SELECT route_id FROM ROUTETABLE ORDER BY route_id DESC LIMIT 1 '
+            ,   selectLastRoute     = 'SELECT route_N FROM ROUTETABLE ORDER BY route_id DESC LIMIT 1 '
             ,   activityStartDate   = localStorage.getItem('LS_StartTime')
+            ,   routeFormFields = {}
+            ,   postRouteData
             // console.log(year);
             // console.log(routeId);
 
@@ -442,10 +598,31 @@ var app = {
 
             app.db.transaction(function(tx){
                 tx.executeSql( insertQuery ,[routeNumber,null], function() {
+
+                    // post route data (route id & route desc)
+                    routeFormFields ["route_n"]            = routeNumber
+                    routeFormFields ["route_description"]  = "null"
+
+                    // postRouteData   = JSON.stringify(routeFormFields)
+                    //console.log(postRouteData);
+                    var array = []
+                    array.push(routeFormFields)
+                    postRouteData  = JSON.stringify(array)
+
+                    app.ajaxCall('POST','route',postRouteData, function(resp) {
+                        console.log(resp);
+                    })
+
                     tx.executeSql( selectLastRoute, [], function(transaction, results) {
                         if (results.rows.length > 0) {
-                            var activity_route_id  = results.rows.item(0).route_id
+                            var activity_route_id  = results.rows.item(0).route_N
                             tx.executeSql( insertActivityQuery ,[userID,activity_route_id,activityStartDate,null,null,null,null], function() {
+                                activityFormField ["user_id"]           = userID
+                                activityFormField ["route_id"]          = activity_route_id
+                                activityFormField ["date_time_start"]   = activityStartDate
+
+                                console.log(activityFormField);
+
                                 var selectActivity  = 'SELECT * FROM ACTIVITYTABLE ORDER BY activity_id DESC LIMIT 1'
 
                                 tx.executeSql( selectActivity, [], function(transaction, results) {
@@ -524,7 +701,7 @@ var app = {
             e.preventDefault();
             var showListQuery = 'SELECT DAMAGETABLE.user_id, ACTIVITYTABLE.route_id,DAMAGETABLE.date_time, DAMAGETABLE.mark_ellapsed_time, DAMAGETABLE.mark_km, DAMAGETABLE.img_name, DAMAGETABLE.gps_find, DAMAGETABLE.address, DAMAGETABLE.maintenace_staus FROM DAMAGETABLE LEFT JOIN ACTIVITYTABLE ON DAMAGETABLE.activity_id= ACTIVITYTABLE.activity_id ORDER BY DAMAGETABLE.damage_id DESC '
             var locationArray = []
-            var directionsService = new google.maps.DirectionsService();
+
 
             app.db.transaction(function(tx) {
                 tx.executeSql( showListQuery, [], function(transaction, results) {
@@ -549,27 +726,14 @@ var app = {
                             locationObject ["img"]      = img
 
                             locationArray.push(locationObject)
-                            // function getAddressFromLatLang(lat,lng) {
-                            //     var a
-                            //     var geocoder = new google.maps.Geocoder();
-                            //     var latLng = new google.maps.LatLng(lat, lng);
-                            //     geocoder.geocode( { 'latLng': latLng}, function(resultss, status) {
-                            //         if (status == google.maps.GeocoderStatus.OK) {
-                            //             a = resultss[0].formatted_address
-                            //             locationObject ["address"]  = a
-                            //         }else{
-                            //             alert("Geocode was not successful for the following reason: " + status);
-                            //         }
-                            //     });
-                            //     locationArray.push(locationObject)
-                            // }
-                            // getAddressFromLatLang(cordinatesLatitude,cordinatesLongitude);
                         }
                     } else {
                         alert('No marked damages yet.Please mark the damges first');
                     }
                     // console.log(locationArray);
-                    directionsDisplay = new google.maps.DirectionsRenderer();
+                    var directionsService = new google.maps.DirectionsService();
+                    directionsDisplay = new google.maps.DirectionsRenderer({map:map,  suppressMarkers: false});
+                    // directionsDisplay = new google.maps.DirectionsRenderer();
                     var map = new google.maps.Map(document.getElementById('googleMap'), {
                         zoom: 4,
                         center: new google.maps.LatLng(lat,long),
@@ -592,11 +756,25 @@ var app = {
 
                         google.maps.event.addListener(marker, 'click', (function(marker, i) {
                             return function() {
-                                var infoContentHTML = '<div id="infowindow"> <figure class="col s4"> <img src="'+locationArray[i].img+'" class="responsive-img" alt=""> </figure> <article class="content-map col s8"> <div><span class="bold">Address</span> <span>'+locationArray[i].address+'</span></div> <div><span class="bold">Travelled km</span> <span>'+locationArray[i].km+'</span></div> <div><span class="bold">Time</span> <span>'+locationArray[i].time+'</span></div> </article> </div>'
+                                var infoContentHTML = '<div id="infowindow"> <figure class="col s4"> <img src="'+locationArray[i].img+'" class="responsive-img" alt=""> </figure> <article class="content-map col s8"> <div><span class="bold">Address</span> <span>'+locationArray[i].address+'</span></div> <div><span class="bold">Time</span> <span>'+locationArray[i].time+'</span></div> </article> </div>'
                                 infowindow.setContent(infoContentHTML);
                                 infowindow.open(map, marker);
                             }
                         })(marker, i))
+                        // if (i == 0) request.origin = marker.getPosition();
+                        // else if (i == locationArray.length - 1) request.destination = marker.getPosition();
+                        // else {
+                        //     if (!request.waypoints) request.waypoints = [];
+                        //     request.waypoints.push({
+                        //         location: marker.getPosition(),
+                        //         stopover: false
+                        //     });
+                        // }
+                        // directionsService.route(request, function(result, status) {
+                        //     if (status == google.maps.DirectionsStatus.OK) {
+                        //         directionsDisplay.setDirections(result);
+                        //     }
+                        // });
                     }
                     var length = localStorage.getItem('LS_length')
                     if (length > 0) {
@@ -643,9 +821,27 @@ var app = {
 
                         var updateQuery     = 'UPDATE ACTIVITYTABLE SET date_time_stop = ?, ellased_time = ?, km_travelled = ?, number_of_marker = ? WHERE activity_id = "' +activityID+'"'
 
-                        console.log(updateQuery);
+                        // console.log(updateQuery);
 
-                        tx.executeSql( updateQuery ,[startTime,ellased_time,kmTravelled,noOfMarker]);
+                        tx.executeSql( updateQuery ,[startTime,ellased_time,kmTravelled,noOfMarker], function() {
+
+                            activityFormField ["date_time_stop"]    = startTime
+                            activityFormField ["ellased_time"]      = ellased_time
+                            activityFormField ["km_travelled"]      = kmTravelled
+                            activityFormField ["number_of_marker"]  = noOfMarker
+                            // console.log(activityFormField);
+
+                            var array = []
+                            array.push(activityFormField)
+                            postActivityData  = JSON.stringify(array)
+                            // console.log(array);
+                            app.ajaxCall('POST','activity',postActivityData, function(resp) {
+                                console.log(resp);
+                                if (resp) {
+                                    activityFormField = {}
+                                }
+                            })
+                        });
                     }
                 })
             })
@@ -759,7 +955,7 @@ var app = {
         ,   dates        = date.getDate()
         ,   month        =  date.getMonth() + 1
         ,   year         =  date.getFullYear()
-        ,   formatedDate = dates + "/" + month + "/" + year
+        ,   formatedDate = dates + "-" + month + "-" + year
         ,   hours        = date.getHours()
         ,   min          = date.getMinutes()
         ,   formatedTime = hours + ":" + min
@@ -870,7 +1066,7 @@ var app = {
         ,   origin = o1+','+o2
         ,   destination = d1+','+d2
 
-        console.log(origin);
+        // console.log(origin);
         var previousDistance = parseInt($('.distance').text())
 
         // console.log(previousDistance + 2);
@@ -895,7 +1091,7 @@ var app = {
                     })
                 })
                 $('.distance').text(finalDistance.toFixed(2))
-                
+
             },
             error: function() {
                 //  console.log('error');
@@ -906,5 +1102,50 @@ var app = {
         localStorage.setItem('DS_LAT',d1)
         localStorage.setItem('DS_LONG',d2)
 
-    }
-};
+    },
+
+
+    // ajax call
+    ajaxCall:     function(methodType, apiURL, sendData, callback) {
+        setTimeout(function() {
+            var onlineStatus = navigator.onLine ?  'online' : 'offline'
+            if (onlineStatus == 'online') {
+                $.ajax({
+                    method: methodType,
+                    url: ''+app.baseURL+apiURL,
+                    headers : {'Content-Type' : 'application/json'},
+                    data    : sendData,
+                    success: function(data) {
+                        // alert(data)
+                        console.log(data);
+                        if (data != null) {
+                            callback(data)
+                        }
+                    },
+                    error: function(err) {
+                        // alert(err);
+                        console.log(err);
+                        callback('ajaxError')
+                    }
+                })
+            }
+        }, 1000)
+    },
+
+    // insert userdata in table from ajax call
+    insertUserdata: function(userName,password,firstName,familyName,number,i) {
+        var insert  = 'INSERT INTO USERTABLE (user_name, password, first_name, family_name, user_work_number) VALUES (?,?,?,?,?)';
+        app.db.transaction(function(tx) {
+            tx.executeSql( insert ,[userName,password,firstName,familyName,number]);
+            // alert(hi)
+        });
+    },
+    hideLoadingFx: function() { $('.overlay').hide() },
+    showLoadingFx: function() {
+        $('.overlay').show()
+        setTimeout(function() {
+            app.hideLoadingFx()
+        }, 20000)
+    },
+}
+;

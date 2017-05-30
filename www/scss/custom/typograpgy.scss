@@ -51,8 +51,8 @@ html,body {
 }
 
 @for $i from 0 through 5 {
-    .page-#{$i},.login-page {
-    // .page-#{$i} {
+    // .page-#{$i},.login-page {
+    .page-#{$i} {
         display: none;
     }
 }
