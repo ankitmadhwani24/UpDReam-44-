@@ -16,6 +16,10 @@ html,body {
     padding: 8px 15px;
     height: initial;
     width: 240px;
+    display: block;
+    margin: auto;
+    margin-bottom: 15px;
+    margin-top: 15px;
 }
 @mixin emptyBtn() {
     background-color: transparent;

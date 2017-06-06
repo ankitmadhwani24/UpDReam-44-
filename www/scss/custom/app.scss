@@ -27,6 +27,17 @@
     i {
         color: $orange;
     }
+    .selections-btn {
+        &.refresh {
+            display: none;
+            i {
+                color: $white;
+                font-size: 20px;
+                position: absolute;
+                left: 30px;
+            }
+        }
+    }
     .submit {
         background-color: transparent;
         border: 2px solid $orange;
@@ -47,6 +58,7 @@
     h4 {
         margin-top: 60px;
         color: $white;
+        text-transform: capitalize;
         span {
             font-weight: 500;
         }

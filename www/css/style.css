@@ -16,7 +16,11 @@ html, body {
   font-size: 18px;
   padding: 8px 15px;
   height: initial;
-  width: 240px; }
+  width: 240px;
+  display: block;
+  margin: auto;
+  margin-bottom: 15px;
+  margin-top: 15px; }
 
 .screen-operations {
   position: fixed;
@@ -83,6 +87,13 @@ html, body {
     color: #1ACCA0; }
   .first-selection i {
     color: #FF8B07; }
+  .first-selection .selections-btn.refresh {
+    display: none; }
+    .first-selection .selections-btn.refresh i {
+      color: #fff;
+      font-size: 20px;
+      position: absolute;
+      left: 30px; }
   .first-selection .submit {
     background-color: transparent;
     border: 2px solid #FF8B07;
@@ -94,7 +105,8 @@ html, body {
     padding: 7px 60px; }
   .first-selection h4 {
     margin-top: 60px;
-    color: #fff; }
+    color: #fff;
+    text-transform: capitalize; }
     .first-selection h4 span {
       font-weight: 500; }
   .first-selection .btn-sel {
@@ -110,7 +122,11 @@ html, body {
     font-size: 18px;
     padding: 8px 15px;
     height: initial;
-    width: 240px; }
+    width: 240px;
+    display: block;
+    margin: auto;
+    margin-bottom: 15px;
+    margin-top: 15px; }
 
 .route-selection {
   height: 100%;
@@ -150,7 +166,11 @@ html, body {
     font-size: 18px;
     padding: 8px 15px;
     height: initial;
-    width: 240px; }
+    width: 240px;
+    display: block;
+    margin: auto;
+    margin-bottom: 15px;
+    margin-top: 15px; }
   .route-selection h4 {
     margin-top: 50px; }
   .route-selection .selections-btn {

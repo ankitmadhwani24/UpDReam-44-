@@ -57,10 +57,10 @@ var app = {
 
             app.db = openDatabase("Dream_App", "1.0", "Dream App", 5 * 1024 * 1024) //Create database
             var createUserTabel     = 'CREATE TABLE IF NOT EXISTS USERTABLE (user_id INTEGER PRIMARY KEY, user_name unique, password, first_name, family_name, user_work_number)'
-            ,   createQuickMarker   = 'CREATE TABLE IF NOT EXISTS DAMAGETABLE(damage_id INTEGER PRIMARY KEY, user_id, activity_id, date_time, gps_find, address, notes, img_name, maintenace_staus, img_optional_1, img_optional_2,img_optional_3,mark_km,mark_ellapsed_time)'
-            ,   createRouteTable    = 'CREATE TABLE IF NOT EXISTS ROUTETABLE (route_id INTEGER PRIMARY KEY, route_N, route_description )'
-            ,   createActivityTable = 'CREATE TABLE IF NOT EXISTS ACTIVITYTABLE (activity_id INTEGER PRIMARY KEY, user_id, route_id, date_time_start, date_time_stop ,ellased_time, km_travelled, number_of_marker)'
-            ,   createGPSTable      = 'CREATE TABLE IF NOT EXISTS GPSTABLE (gps_activity INTEGER PRIMARY KEY, activity_id, date, gps_lat, gps_long)'
+            ,   createQuickMarker   = 'CREATE TABLE IF NOT EXISTS DAMAGETABLE(damage_id INTEGER PRIMARY KEY, user_id, activity_id, date_time, gps_find, address, notes, img_name, maintenace_staus, img_optional_1, img_optional_2,img_optional_3,mark_km,mark_ellapsed_time, is_posted)'
+            ,   createRouteTable    = 'CREATE TABLE IF NOT EXISTS ROUTETABLE (route_id INTEGER PRIMARY KEY, route_N, route_description, is_posted )'
+            ,   createActivityTable = 'CREATE TABLE IF NOT EXISTS ACTIVITYTABLE (activity_id INTEGER PRIMARY KEY, user_id, route_id, date_time_start, date_time_stop ,ellased_time, km_travelled, number_of_marker, is_posted)'
+            ,   createGPSTable      = 'CREATE TABLE IF NOT EXISTS GPSTABLE (gps_activity INTEGER PRIMARY KEY, activity_id, date, gps_lat, gps_long, is_posted)'
             ,   insert              = 'INSERT INTO USERTABLE (user_name, password, first_name, family_name, user_work_number) VALUES ("testuser","testuser","ifty","alam","9829055")';
 
             // app.ajaxCall('GET','getUsers',null, function(userdataAPI) {
@@ -82,10 +82,10 @@ var app = {
         } else {
             app.db = openDatabase("Dream_App", "1.0", "Dream App", 5 * 1024 * 1024) //Create database
             var createUserTabel     = 'CREATE TABLE IF NOT EXISTS USERTABLE (user_id INTEGER PRIMARY KEY, user_name unique, password, first_name, family_name, user_work_number)'
-            ,   createQuickMarker   = 'CREATE TABLE IF NOT EXISTS DAMAGETABLE(damage_id INTEGER PRIMARY KEY, user_id, activity_id, date_time, gps_find, address, notes, img_name, maintenace_staus, img_optional_1, img_optional_2,img_optional_3,mark_km,mark_ellapsed_time)'
-            ,   createRouteTable    = 'CREATE TABLE IF NOT EXISTS ROUTETABLE (route_id INTEGER PRIMARY KEY, route_N, route_description )'
-            ,   createActivityTable = 'CREATE TABLE IF NOT EXISTS ACTIVITYTABLE (activity_id INTEGER PRIMARY KEY, user_id, route_id, date_time_start, date_time_stop ,ellased_time, km_travelled, number_of_marker)'
-            ,   createGPSTable      = 'CREATE TABLE IF NOT EXISTS GPSTABLE (gps_activity INTEGER PRIMARY KEY, activity_id, date, gps_lat, gps_long)'
+            ,   createQuickMarker   = 'CREATE TABLE IF NOT EXISTS DAMAGETABLE(damage_id INTEGER PRIMARY KEY, user_id, activity_id, date_time, gps_find, address, notes, img_name, maintenace_staus, img_optional_1, img_optional_2,img_optional_3,mark_km,mark_ellapsed_time,is_posted)'
+            ,   createRouteTable    = 'CREATE TABLE IF NOT EXISTS ROUTETABLE (route_id INTEGER PRIMARY KEY, route_N, route_description, is_posted )'
+            ,   createActivityTable = 'CREATE TABLE IF NOT EXISTS ACTIVITYTABLE (activity_id INTEGER PRIMARY KEY, user_id, route_id, date_time_start, date_time_stop ,ellased_time, km_travelled, number_of_marker, is_posted)'
+            ,   createGPSTable      = 'CREATE TABLE IF NOT EXISTS GPSTABLE (gps_activity INTEGER PRIMARY KEY, activity_id, date, gps_lat, gps_long, is_posted)'
 
             app.showLoadingFx();
             app.db.transaction(function (tx) {
@@ -263,7 +263,7 @@ var app = {
             // $('.first-selection, .route').hide();
             // $('.status li a').removeClass('active')
             // $('.confirm').show();
-            // $('.confirm').show()
+
             app.gpsCurrent();
             app.confirmMetadata();
 
@@ -377,7 +377,7 @@ var app = {
             ,   dateToPost
             ,   postDate        = date.split('-')
             // todo remove userid
-            // ,   userID = 1
+            //,   userID = 1
             ,   damagaeFormField = {}
             ,   postDamageData
             ,   gpsFormField = {}
@@ -425,13 +425,13 @@ var app = {
 
             getDataURL(img, function(base64URL) {
                 if (userID != null && userID != undefined && userID != '') {
-                    var insertQuery     = 'INSERT INTO DAMAGETABLE (user_id, activity_id, date_time, gps_find, address, notes, img_name, maintenace_staus, img_optional_1, img_optional_2,img_optional_3,mark_km,mark_ellapsed_time) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)'
-                    ,   insertGPSQuery  = 'INSERT INTO GPSTABLE (activity_id, date, gps_lat, gps_long) VALUES (?,?,?,?)'
+                    var insertQuery     = 'INSERT INTO DAMAGETABLE (user_id, activity_id, date_time, gps_find, address, notes, img_name, maintenace_staus, img_optional_1, img_optional_2,img_optional_3,mark_km,mark_ellapsed_time, is_posted) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
+                    ,   insertGPSQuery  = 'INSERT INTO GPSTABLE (activity_id, date, gps_lat, gps_long,is_posted) VALUES (?,?,?,?,?)'
                     // 'INSERT INTO USERTABLE (user_name, password, first_name, family_name, user_work_number) VALUES ("iftakhar","123456789","ifty","alam","9829055")';
 
                     if(itsDataMarkBtn == 'outerBtn') {
                         app.db.transaction(function(tx) {
-                            tx.executeSql( insertQuery ,[userID,null,dataTime,gps_find,address,note,base64URL,status,thumbnailImg1,thumbnailImg2,thumbnailImg3,null,null], function() {
+                            tx.executeSql( insertQuery ,[userID,null,dataTime,gps_find,address,note,'base64URL',status,thumbnailImg1,thumbnailImg2,thumbnailImg3,null,null,null], function() {
 
                                 // damage form data for post
                                 damagaeFormField ["user_id"]          = userID
@@ -443,7 +443,7 @@ var app = {
                                 // damagaeFormField ["gps_find"]           = '00'
                                 damagaeFormField ["address"]            = address
                                 damagaeFormField ["notes"]              = note
-                                damagaeFormField ["img_name"]           = base64URL
+                                damagaeFormField ["img_name"]           = 'base64URL'
                                 damagaeFormField ["maintenance_status"] = status
                                 damagaeFormField ["img_optional_1"]     = thumbnailImg1
                                 damagaeFormField ["img_optional_2"]     = thumbnailImg2
@@ -459,7 +459,26 @@ var app = {
                                 postDamageData  = JSON.stringify(array)
 
                                 app.ajaxCall('POST','damage',postDamageData, function(resp) {
-                            //        console.log(resp);
+                                //    console.log(resp);
+                                    if (resp == "ajaxError") {
+                                        // console.log("HI");
+                                            // console.log('hi');
+                                        var selectLastDamageID = 'SELECT damage_id FROM DAMAGETABLE ORDER BY damage_id DESC LIMIT 1'
+                                        app.db.transaction(function(tx1){
+                                            tx1.executeSql( selectLastDamageID, [], function(transaction, results) {
+                                                // console.log(results);
+                                                if (results.rows.length > 0) {
+                                                    var lastID       =  results.rows.item(0).damage_id
+                                                    ,   updatePostedValue =  'UPDATE DAMAGETABLE SET is_posted = ? WHERE damage_id = "' +lastID+'"'
+                                                    tx1.executeSql( updatePostedValue, [true], function() {
+                                                        $('.refresh').css({
+                                                            'display': 'block'
+                                                        })
+                                                    })
+                                                }
+                                            })
+                                        })
+                                    }
                                 })
 
                                 $('.confirm').hide();
@@ -474,7 +493,7 @@ var app = {
                                     var activityID    = results.rows.item(0).activity_id
                                     ,   ellapsedTime  = $('#time2').text()
                                     // TODO: remove baseURL quotes
-                                    tx.executeSql( insertQuery, [userID,activityID,dataTime,gps_find,address,note,base64URL,status,thumbnailImg1,thumbnailImg2,thumbnailImg3,'null',ellapsedTime], function() {
+                                    tx.executeSql( insertQuery, [userID,activityID,dataTime,gps_find,address,note,'base64URL',status,thumbnailImg1,thumbnailImg2,thumbnailImg3,'null',ellapsedTime,null], function() {
 
                                         // damage form data for post
                                         damagaeFormField ["user_id"]          = userID
@@ -486,7 +505,7 @@ var app = {
                                         // damagaeFormField ["gps_find"]           = '00'
                                         damagaeFormField ["address"]            = address
                                         damagaeFormField ["notes"]              = note
-                                        damagaeFormField ["img_name"]           = base64URL
+                                        damagaeFormField ["img_name"]           = 'base64URL'
                                         damagaeFormField ["maintenance_status"] = status
                                         damagaeFormField ["img_optional_1"]     = thumbnailImg1
                                         damagaeFormField ["img_optional_2"]     = thumbnailImg2
@@ -502,11 +521,27 @@ var app = {
                                         postDamageData  = JSON.stringify(array)
 
                                         app.ajaxCall('POST','damage',postDamageData, function(resp) {
-                                            //console.log(resp);
+                                            console.log(resp);
+                                            if (resp == "ajaxError") {
+                                                var selectLastDamageID = 'SELECT damage_id FROM DAMAGETABLE ORDER BY damage_id DESC LIMIT 1'
+                                                app.db.transaction(function(tx1){
+                                                    tx1.executeSql( selectLastDamageID, [], function(transaction, results) {
+                                                        if (results.rows.length > 0) {
+                                                            var lastID       =  results.rows.item(0).damage_id
+                                                            ,   updatePostedValue =  'UPDATE DAMAGETABLE SET is_posted = ? WHERE damage_id = "' +lastID+'"'
+                                                            tx1.executeSql( updatePostedValue, [true], function() {
+                                                                $('.refresh').css({
+                                                                    'display': 'block'
+                                                                })
+                                                            })
+                                                        }
+                                                    })
+                                                })
+                                            }
                                         })
 
                                         //  gps data  enter into GPSTABLE
-                                        tx.executeSql( insertGPSQuery, [activityID,dataTime,latitide,longitude], function() {
+                                        tx.executeSql( insertGPSQuery, [activityID,dataTime,latitide,longitude,null], function() {
 
                                             gpsFormField ["activity_id"]    = activityID
                                             gpsFormField ["date"]           = dateToPost
@@ -521,7 +556,22 @@ var app = {
                                             postGPSData  = JSON.stringify(array)
 
                                             app.ajaxCall('POST','gps',postGPSData, function(resp) {
-                                                // console.log(resp);
+                                                if (resp == "ajaxError") {
+                                                    var selectLastID = 'SELECT gps_activity FROM GPSTABLE ORDER BY gps_activity DESC LIMIT 1'
+                                                    app.db.transaction(function(tx1){
+                                                        tx1.executeSql( selectLastID, [], function(transaction, results) {
+                                                            if (results.rows.length > 0) {
+                                                                var lastID       =  results.rows.item(0).gps_activity
+                                                                ,   updatePostedValue =  'UPDATE GPSTABLE SET is_posted = ? WHERE gps_activity = "' +lastID+'"'
+                                                                tx1.executeSql( updatePostedValue, [true], function() {
+                                                                    $('.refresh').css({
+                                                                        'display': 'block'
+                                                                    })
+                                                                })
+                                                            }
+                                                        })
+                                                    })
+                                                }
                                             })
                                         })
                                         var selectQuery     = 'SELECT * FROM DAMAGETABLE WHERE activity_id = '+activityID+''
@@ -573,7 +623,7 @@ var app = {
             // console.log(currentDate);
             localStorage.setItem('LS_StartTime', currentDate);
             var routeNumber         = $(this).attr('data-routeid')
-            ,   insertQuery         = 'INSERT INTO ROUTETABLE (route_N, route_description) VALUES(?,?)'
+            ,   insertQuery         = 'INSERT INTO ROUTETABLE (route_N, route_description,is_posted) VALUES(?,?,?)'
             ,   date                = new Date()
             ,   dates               = date.getDate()
             ,   month               = date.getMonth() + 1
@@ -584,7 +634,7 @@ var app = {
             ,   formatedTime        = hours + ":" + min
             ,   currentDate         = formatedDate
             ,   currentTime         = formatedTime
-            ,   insertActivityQuery = 'INSERT INTO ACTIVITYTABLE (user_id,route_id,date_time_start, date_time_stop, ellased_time, km_travelled, number_of_marker) VALUES(?,?,?,?,?,?,?)'
+            ,   insertActivityQuery = 'INSERT INTO ACTIVITYTABLE (user_id,route_id,date_time_start, date_time_stop, ellased_time, km_travelled, number_of_marker, is_posted) VALUES(?,?,?,?,?,?,?,?)'
             ,   userID              = localStorage.getItem('LS_userId')
             ,   selectLastRoute     = 'SELECT route_N FROM ROUTETABLE ORDER BY route_id DESC LIMIT 1 '
             ,   activityStartDate   = localStorage.getItem('LS_StartTime')
@@ -597,7 +647,7 @@ var app = {
             // console.log(routeNumber);
 
             app.db.transaction(function(tx){
-                tx.executeSql( insertQuery ,[routeNumber,null], function() {
+                tx.executeSql( insertQuery ,[routeNumber,null,null], function() {
 
                     // post route data (route id & route desc)
                     routeFormFields ["route_n"]            = routeNumber
@@ -610,18 +660,35 @@ var app = {
                     postRouteData  = JSON.stringify(array)
 
                     app.ajaxCall('POST','route',postRouteData, function(resp) {
-                        console.log(resp);
+                        // console.log(resp);
+                        if (resp == 'ajaxError') {
+                            // console.log('hi');
+                            var selectLastRouteID = 'SELECT route_id FROM ROUTETABLE ORDER BY route_id DESC LIMIT 1'
+                            app.db.transaction(function(tx1){
+                                tx1.executeSql( selectLastRouteID, [], function(transaction, results) {
+                                    if (results.rows.length > 0) {
+                                        var lastRouteID       =  results.rows.item(0).route_id
+                                        ,   updatePostedValue =  'UPDATE ROUTETABLE SET is_posted = ? WHERE route_id = "' +lastRouteID+'"'
+                                        tx1.executeSql( updatePostedValue, [true], function() {
+                                            $('.refresh').css({
+                                                'display': 'block'
+                                            })
+                                        })
+                                    }
+                                })
+                            })
+                        }
                     })
 
                     tx.executeSql( selectLastRoute, [], function(transaction, results) {
                         if (results.rows.length > 0) {
                             var activity_route_id  = results.rows.item(0).route_N
-                            tx.executeSql( insertActivityQuery ,[userID,activity_route_id,activityStartDate,null,null,null,null], function() {
+                            tx.executeSql( insertActivityQuery ,[userID,activity_route_id,activityStartDate,null,null,null,null,null], function() {
                                 activityFormField ["user_id"]           = userID
                                 activityFormField ["route_id"]          = activity_route_id
                                 activityFormField ["date_time_start"]   = activityStartDate
 
-                                console.log(activityFormField);
+                                // console.log(activityFormField);
 
                                 var selectActivity  = 'SELECT * FROM ACTIVITYTABLE ORDER BY activity_id DESC LIMIT 1'
 
@@ -836,9 +903,23 @@ var app = {
                             postActivityData  = JSON.stringify(array)
                             // console.log(array);
                             app.ajaxCall('POST','activity',postActivityData, function(resp) {
-                                console.log(resp);
-                                if (resp) {
-                                    activityFormField = {}
+                                if (resp == "ajaxError") {
+                                    console.log(resp);
+                                    var selectLastID = 'SELECT activity_id FROM ACTIVITYTABLE ORDER BY activity_id DESC LIMIT 1'
+                                    app.db.transaction(function(tx1){
+                                        tx1.executeSql( selectLastID, [], function(transaction, results) {
+                                            if (results.rows.length > 0) {
+                                                var lastID       =  results.rows.item(0).activity_id
+                                                ,   updatePostedValue =  'UPDATE ACTIVITYTABLE SET is_posted = ? WHERE activity_id = "'+lastID+'"'
+                                                tx1.executeSql( updatePostedValue, [true], function() {
+                                                    console.log("jk");
+                                                    $('.refresh').css({
+                                                        'display': 'block'
+                                                    })
+                                                })
+                                            }
+                                        })
+                                    })
                                 }
                             })
                         });
@@ -889,6 +970,195 @@ var app = {
                     }
                 })
             })
+        })
+
+        //offline sync data
+        $('.refresh').on('click', function(e) {
+            e.preventDefault();
+            var onlineStatus = navigator.onLine ?  'online' : 'offline';
+            if (onlineStatus == 'online') {
+                //console.log("j");
+                //fetched data from route table
+                var selectQuery         = 'SELECT * FROM ROUTETABLE WHERE is_posted = "true"'
+                ,   damageQuery         = 'SELECT * FROM DAMAGETABLE WHERE is_posted = "true"'
+                ,   GPSQuery            = 'SELECT * FROM GPSTABLE WHERE is_posted = "true"'
+                ,   activityQuery       = 'SELECT * FROM ACTIVITYTABLE WHERE is_posted = "true"'
+                ,   offlineRouteData    = {}
+                ,   offlineRouteArray   = []
+                ,   offlineDamageData   = {}
+                ,   offlineDamageArray  = []
+                ,   offlineGPSData      = {}
+                ,   offlineGPSArray     = []
+                ,   offlineActivityData = {}
+                ,   offlineActivityArray= []
+
+                app.db.transaction(function(tx) {
+                    //route offline data
+                    tx.executeSql( selectQuery, [], function(transaction, results) {
+                        // console.log(results);
+                        if( results.rows.length > 0 ) {
+                            for (var i = 0; i < results.rows.length; i++) {
+                                offlineRouteData    = {}
+                                var routeN      = results.rows.item(i).route_N
+                                ,   routeDesc   = results.rows.item(i).route_description
+
+                                //console.log(routeN);
+                                offlineRouteData["route_n"]             = routeN
+                                offlineRouteData["route_description"]   = 'null'
+                                // var array = []
+                                offlineRouteArray.push(offlineRouteData)
+                            }
+                            // offlineRouteArray.push(offlineRouteArray)
+                            //console.log(offlineRouteArray);
+                            var offlineString  = JSON.stringify(offlineRouteArray)
+
+                            app.ajaxCall('POST','route',offlineString, function(resp) {
+                                if (resp != "ajaxError") {
+                                    console.log(resp);
+                                    var updatePostedColumn = 'UPDATE ROUTETABLE SET is_posted = ? WHERE is_posted = "true"';
+                                    //    console.log(updatePostedColumn);
+                                    app.db.transaction(function(tx2) {
+                                        tx2.executeSql( updatePostedColumn, [null], function() {})
+                                    })
+                                }
+                            })
+                        }
+                    })
+                    //damage offline data
+
+                    tx.executeSql( damageQuery, [], function(transaction, results) {
+                        // console.log(results);
+                        if( results.rows.length > 0 ) {
+                            //[userID,null,dataTime,gps_find,address,note,'base64URL',status,thumbnailImg1,thumbnailImg2,thumbnailImg3,null,null,null]
+                            for (var i = 0; i < results.rows.length; i++) {
+                                offlineDamageData    = {}
+                                var userID           = results.rows.item(i).user_id
+                                ,   activityID       = results.rows.item(i).activity_id
+                                ,   dateTime         = results.rows.item(i).date_time
+                                ,   gpsFind          = results.rows.item(i).gps_find
+                                ,   address          = results.rows.item(i).address
+                                ,   notes            = results.rows.item(i).notes
+                                ,   base64URL        = results.rows.item(i).img_name
+                                ,   status           = results.rows.item(i).maintenace_staus
+                                ,   thumbnailImg1    = results.rows.item(i).img_optional_1
+                                ,   thumbnailImg2    = results.rows.item(i).img_optional_2
+                                ,   thumbnailImg3    = results.rows.item(i).img_optional_3
+                                ,   markKM           = results.rows.item(i).mark_km
+                                ,   markEllapsed     = results.rows.item(i).mark_ellapsed_time
+
+                                // damage form data for post
+                                offlineDamageData ["user_id"]             = userID
+                                offlineDamageData ["activity_id"]         = activityID
+                                offlineDamageData ["date_time"]           = dateTime
+                                offlineDamageData ["gps_find"]            = '00'
+                                offlineDamageData ["address"]             = address
+                                offlineDamageData ["notes"]               = notes
+                                offlineDamageData ["img_name"]            = base64URL
+                                offlineDamageData ["maintenance_status"]  = status
+                                offlineDamageData ["img_optional_1"]      = thumbnailImg1
+                                offlineDamageData ["img_optional_2"]      = thumbnailImg2
+                                offlineDamageData ["img_optional_3"]      = thumbnailImg3
+                                offlineDamageData ["mark_km"]             = markKM
+                                offlineDamageData ["mark_ellapsed_time"]  = markEllapsed
+
+                                offlineDamageArray.push(offlineDamageData)
+                            }
+                            var offlineString1  = JSON.stringify(offlineDamageArray);
+                            //    console.log(offlineString1);
+                            app.ajaxCall('POST','damage',offlineString1, function(resp) {
+                                if (resp != "ajaxError") {
+                                    console.log(resp);
+                                    var updatePostedColumn = 'UPDATE DAMAGETABLE SET is_posted = ? WHERE is_posted = "true"';
+                                    app.db.transaction(function(tx2) {
+                                        tx2.executeSql( updatePostedColumn, [null], function() {})
+                                    })
+                                }
+                            })
+                        }
+                    })
+
+                    // offline gps data
+                    tx.executeSql( GPSQuery, [], function(transaction, results) {
+                        // console.log(results);
+                        if( results.rows.length > 0 ) {
+
+                            for (var i = 0; i < results.rows.length; i++) {
+                                offlineGPSData    = {}
+                                var activityID    = results.rows.item(i).activity_id
+                                ,   date          = results.rows.item(i).date
+                                ,   GPSLat        = results.rows.item(i).gps_lat
+                                ,   GPSLong       = results.rows.item(i).gps_long
+
+
+                                // GPS form data for post
+                                offlineGPSData ["activity_id"]  = activityID
+                                offlineGPSData ["date"]         = date
+                                offlineGPSData ["gps_lat"]      = GPSLat
+                                offlineGPSData ["gps_long"]     = GPSLong
+
+
+                                offlineGPSArray.push(offlineGPSData)
+                            }
+                            var offlineString2  = JSON.stringify(offlineGPSArray);
+                            // console.log(offlineString2);
+                            app.ajaxCall('POST','gps',offlineString2, function(resp) {
+                                if (resp != "ajaxError") {
+                                    console.log(resp);
+                                    var updatePostedColumn = 'UPDATE GPSTABLE SET is_posted = ? WHERE is_posted = "true"';
+                                    app.db.transaction(function(tx2) {
+                                        tx2.executeSql( updatePostedColumn, [null], function() {})
+                                    })
+                                }
+                            })
+                        }
+                    })
+
+                    // activity offline data
+                    tx.executeSql( activityQuery, [], function(transaction, results) {
+                        // console.log(results);
+                        if( results.rows.length > 0 ) {
+
+                            for (var i = 0; i < results.rows.length; i++) {
+                                offlineActivityData    = {}
+                                var userId      = results.rows.item(i).user_id
+                                ,   routeId     = results.rows.item(i).route_id
+                                ,   dateStart   = results.rows.item(i).date_time_start
+                                ,   dateStop    = results.rows.item(i).date_time_stop
+                                ,   ETime       = results.rows.item(i).ellased_time
+                                ,   kmTravelled = results.rows.item(i).km_travelled
+                                ,   noOfMarker  = results.rows.item(i).number_of_marker
+
+                                // activity form data for post
+                                offlineActivityData ["user_id"]           = userId
+                                offlineActivityData ["route_id"]          = routeId
+                                offlineActivityData ["date_time_start"]   = dateStart
+                                offlineActivityData ["date_time_stop"]    = dateStop
+                                offlineActivityData ["ellased_time"]      = ETime
+                                offlineActivityData ["km_travelled"]      = kmTravelled
+                                offlineActivityData ["number_of_marker"]  = noOfMarker
+
+                                offlineActivityArray.push(offlineActivityData)
+                            }
+                            var offlineString4  = JSON.stringify(offlineActivityArray);
+                            console.log(offlineString4);
+                            app.ajaxCall('POST','activity',offlineString4, function(resp) {
+                                if (resp != "ajaxError") {
+                                    console.log(resp);
+                                    var updatePostedColumn = 'UPDATE ACTIVITYTABLE SET is_posted = ? WHERE is_posted = "true"';
+                                    app.db.transaction(function(tx2) {
+                                        tx2.executeSql( updatePostedColumn, [null], function() {})
+                                    })
+                                }
+                            })
+                        }
+                    })
+
+                    app.showLoadingFx();
+                    $('.refresh').hide();
+                })
+            } else {
+                alert('Device not connected with internet');
+            }
         })
     },
     loginForm: function() {
@@ -1109,7 +1379,7 @@ var app = {
     ajaxCall:     function(methodType, apiURL, sendData, callback) {
         setTimeout(function() {
             var onlineStatus = navigator.onLine ?  'online' : 'offline'
-            if (onlineStatus == 'online') {
+            // if (onlineStatus == 'online') {
                 $.ajax({
                     method: methodType,
                     url: ''+app.baseURL+apiURL,
@@ -1123,12 +1393,11 @@ var app = {
                         }
                     },
                     error: function(err) {
-                        // alert(err);
-                        console.log(err);
+                        // console.log('err');
                         callback('ajaxError')
                     }
                 })
-            }
+            // }
         }, 1000)
     },
 
